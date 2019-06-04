@@ -216,7 +216,7 @@ cout << eurovision.legalParticipant(p3); // will display 0 (false)
 
 /* the operation legalParticipant checks if all the following exists :
    the names of the state and the song and the singer are not empty "",
-   as well as time length of the song is not big than the max allowed time length
+   as well as time length of the song is not bigger than the max allowed time length
    for any song. this max allowed value is determined when defining the
    system object. default is 180 (sec).
 */
@@ -239,7 +239,7 @@ TEST("1.9")
 
 TEST("1.10")
   cout << eurovision.participate("Israel");  // 1 (true). The state Israel is registered and participates.
-  cout << eurovision.participate("France");  // 0 (false). France is not registered, therefoe does not participate.
+  cout << eurovision.participate("France");  // 0 (false). France is not registered, therefore does not participate.
 
   cout << "------------------------------" << endl;
 
@@ -247,7 +247,7 @@ TEST("1.10")
   Voter vr1("Israel");
 /* vr1 is a potential voter that comes from Israel.
    any voter belongs to a state and can be either Regular or Judge. The default is Regular.
-   no default to the state.  vr1 can be defind also as
+   no default to the state.  vr1 can be defined also as
    Voter vr1("Israel", Regular);
 */
 
@@ -284,8 +284,8 @@ TEST("1.11")
    Moreover, he can vote all the times for the same state, or he can vote
    each time for a different state, in condition he does not exceed the allowed
    limit of max times of voting.
-   a Judge voter can vote only ONCE, no more. all additions votings of his are
-   just ignored without furthere notification.
+   a Judge voter can vote only ONCE, no more. all additional votes of his are
+   just ignored without further notification.
    in contradiction to a regular voter, he can give a list of 1 to 10 different state names.
    the points given to the states are according to the order they are mentioned :
    first state gets 12 points, second 10 points, third 8 points and so on.
