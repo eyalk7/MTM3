@@ -16,32 +16,32 @@ enum Phase { Registration, Contest, Voting };
 class Participant
 {
 // relevant private members can be defined here, if necessary.
-const String state;
-String song;
-String singer;
-int song_length;
-bool is_registered;
-int regular_votes;
-int judge_votes;
+    const String state;
+    String song;
+    String singer;
+    int song_length;
+    bool is_registered;
+    int regular_votes;
+    int judge_votes;
 
-public :
-// need to define here possibly c'tr and d'tr and ONLY methods that
-// are mentioned and demonstrated in the test example that has been published.
-// NO OTHER METHODS SHOULD APPEAR HERE.
+    public :
+    // need to define here possibly c'tr and d'tr and ONLY methods that
+    // are mentioned and demonstrated in the test example that has been published.
+    // NO OTHER METHODS SHOULD APPEAR HERE.
 
-Participant(String state, String song, int song_length, String singer);
-Participant(Participant const&) = delete;
+    Participant(String state, String song, int song_length, String singer);
+    Participant(Participant const&) = delete;
 
-// get functions:
-String state();
-String song();
-String singer();
-int timeLength();
-bool isRegistered();
+    // get functions:
+    String state();
+    String song();
+    String singer();
+    int timeLength();
+    bool isRegistered();
 
-// set functions:
-void update(String name, int length, String singer);
-void updateRegistered(bool registered);
+    // set functions:
+    void update(String name, int length, String singer);
+    void updateRegistered(bool registered);
 
 // NO friend is allowed here. :(
 
@@ -53,26 +53,26 @@ ostream& operator<<(ostream& os, const Participant& participant);
 
 class Voter
 {
-// relevant private members can be defined here, if necessary.
-const String state;     // voter's state
-const VoterType type;
-int time_of_votes;
+    // relevant private members can be defined here, if necessary.
+    const String state;     // voter's state
+    const VoterType type;
+    int time_of_votes;
 
-public :
-Voter(String state, VoterType type = Regular); // votes = 0
+    public :
+    Voter(String state, VoterType type = Regular); // votes = 0
 
-// get :
-int timeOfVotes();
-String state();
-VoterType voterType();
+    // get :
+    int timeOfVotes();
+    String state();
+    VoterType voterType();
 
-Voter& operator++();
+    Voter& operator++();
 
-// need to define here possibly c'tr and d'tr and ONLY methods that
-// are mentioned and demonstrated in the test example that has been published.
-// NO OTHER METHODS SHOULD APPEAR HERE.
+    // need to define here possibly c'tr and d'tr and ONLY methods that
+    // are mentioned and demonstrated in the test example that has been published.
+    // NO OTHER METHODS SHOULD APPEAR HERE.
 
-// NO friend is allowed here.
+    // NO friend is allowed here. :(
 
 };
 
@@ -81,13 +81,13 @@ ostream& operator<<(ostream& os, const Voter& voter);
 
 struct Vote
 {
-Voter voter;
-String states[10];
+    Voter voter;
+    String states[10];
 
 // ALL is public here.
 // need to define ONLY data members and c'tr and d'tr.
 // NO NEED to define anything else.
-Vote(Voter voter, String state1,
+    Vote(Voter voter, String state1,
                   String state2 = "",
                   String state3 = "",
                   String state4 = "",
@@ -97,7 +97,7 @@ Vote(Voter voter, String state1,
                   String state8 = "",
                   String state9 = "",
                   String state10 = "");
-~Vote();
+    ~Vote();
 
 };
 
