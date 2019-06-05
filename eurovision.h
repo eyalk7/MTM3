@@ -24,7 +24,7 @@ class Participant
     int regular_votes;
     int judge_votes;
 
-    public :
+public :
     // need to define here possibly c'tr and d'tr and ONLY methods that
     // are mentioned and demonstrated in the test example that has been published.
     // NO OTHER METHODS SHOULD APPEAR HERE.
@@ -58,7 +58,7 @@ class Voter
     const VoterType type;
     int time_of_votes;
 
-    public :
+public :
     Voter(String state, VoterType type = Regular); // votes = 0
 
     // get :
@@ -88,15 +88,15 @@ struct Vote
 // need to define ONLY data members and c'tr and d'tr.
 // NO NEED to define anything else.
     Vote(Voter voter, String state1,
-                  String state2 = "",
-                  String state3 = "",
-                  String state4 = "",
-                  String state5 = "",
-                  String state6 = "",
-                  String state7 = "",
-                  String state8 = "",
-                  String state9 = "",
-                  String state10 = "");
+         String state2 = "",
+         String state3 = "",
+         String state4 = "",
+         String state5 = "",
+         String state6 = "",
+         String state7 = "",
+         String state8 = "",
+         String state9 = "",
+         String state10 = "");
     ~Vote();
 
 };
@@ -107,7 +107,7 @@ struct Vote
 class MainControl
 {
 // relevant private members can be defined here, if necessary.
-static Phase phase;
+    static Phase phase;
 
     Participant* participants; // LINKED LISTS??? (need sort :/)
     int num_of_participants;
@@ -119,17 +119,17 @@ static Phase phase;
 public :
 
 
-static Phase getPhase();
+    static Phase getPhase();
 
 // need to define here possibly c'tr and d'tr and ONLY methods that
 // are mentioned and demonstrated in the test example that has been published.
 // NO OTHER METHODS SHOULD APPEAR HERE.
 
-MainControl(int max_song_length = 180, int max_participants = 26, int max_regular_votes = 5);
+    MainControl(int max_song_length = 180, int max_participants = 26, int max_regular_votes = 5);
 
     void setPhase(Phase phase); // not static!
     bool participate(String state);
-    legalParticipant(Participant participant);
+    bool legalParticipant(Participant participant);
 
     MainControl& operator+=(const Participant& participant);
     MainControl& operator-=(const Participant& participant);
