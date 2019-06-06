@@ -31,7 +31,7 @@ public :
     // are mentioned and demonstrated in the test example that has been published.
     // NO OTHER METHODS SHOULD APPEAR HERE.
 
-    Participant(string state, string song, int song_length, string singer);
+    Participant(const string& state, const string& song, int song_length, const string& singer);
     Participant(Participant const&) = delete;
 
     // get functions:
@@ -42,7 +42,7 @@ public :
     bool isRegistered() const;
 
     // set functions:
-    void update(string name, int length, string singer);
+    void update(const string& name, int length, const string& singer);
     void updateRegistered(bool registered);
 
 // NO friend is allowed here. :(
@@ -61,7 +61,7 @@ class Voter
     int m_times_of_votes;
 
 public :
-    Voter(string state, VoterType type = Regular); // votes = 0
+    explicit Voter(const string& state, VoterType type = Regular);
 
     // get :
     int timesOfVotes() const;
@@ -89,16 +89,16 @@ struct Vote
 // ALL is public here.
 // need to define ONLY data members and c'tr and d'tr.
 // NO NEED to define anything else.
-    Vote(Voter voter, string state1,
-         string state2 = "",
-         string state3 = "",
-         string state4 = "",
-         string state5 = "",
-         string state6 = "",
-         string state7 = "",
-         string state8 = "",
-         string state9 = "",
-         string state10 = "");
+    Vote(const Voter& voter, const string& state1,
+         const string& state2 = "",
+         const string& state3 = "",
+         const string& state4 = "",
+         const string& state5 = "",
+         const string& state6 = "",
+         const string& state7 = "",
+         const string& state8 = "",
+         const string& state9 = "",
+         const string& state10 = "");
     ~Vote();
 
 };
@@ -119,18 +119,16 @@ class MainControl
     int m_max_regular_votes;
 
 public :
-
-
     static Phase getPhase();
 
 // need to define here possibly c'tr and d'tr and ONLY methods that
 // are mentioned and demonstrated in the test example that has been published.
 // NO OTHER METHODS SHOULD APPEAR HERE.
 
-    MainControl(int max_song_length = 180, int max_participants = 26, int max_regular_votes = 5);
+    explicit MainControl(int max_song_length = 180, int max_participants = 26, int max_regular_votes = 5);
 
     void setPhase(Phase phase); // not static!
-    bool participate(string state) const;
+    bool participate(const string& state) const;
     bool legalParticipant(const Participant& participant) const;
 
     MainControl& operator+=(const Participant& participant);
