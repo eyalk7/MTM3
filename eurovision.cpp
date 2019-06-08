@@ -49,37 +49,36 @@ ostream& operator<<(ostream& os, const Participant& participant) {
     return os;
 }
 //---------------------------------------------------
-
-Voter::Voter(string state, VoterType type) : m_state(state), m_type(type) {
-    // votes = 0
+Voter::Voter(const string& state, VoterType type) : m_state(state), m_type(type), m_times_of_votes(0) {
 
 }
 
 // get functions:
 int Voter::timesOfVotes() const {
-
+    return m_times_of_votes;
 }
 string Voter::state() const {
-
+    return m_state;
 }
 VoterType Voter::voterType() const {
-
+    return m_type;
 }
 
 Voter& Voter::operator++() {
-
+    m_times_of_votes++;
+    return *this;
 }
 
 ostream& operator<<(ostream& os, const Voter& voter) {
-
+    return os << "<" << voter.state() << "/" << voter.voterType() << ">" << endl;
 }
 // -----------------------------------------------------------
 
-Vote::Vote(Voter voter, string state1, string state2,
-                        string state3, string state4,
-                        string state5, string state6,
-                        string state7, string state8,
-                        string state9, string state10) : m_voter(voter.state(), voter.voterType()) {
+Vote::Vote(const Voter& voter, const string& state1,
+           const string& state2, const string& state3, const string& state4,
+           const string& state5, const string& state6, const string& state7,
+           const string& state8, const string& state9, const string& state10) :
+        m_voter(voter.state(), voter.voterType()) {
     // voter.state != states ??
     m_states = new string[10] {
             state1, state2, state3, state4, state5, state6, state7, state8, state9, state10

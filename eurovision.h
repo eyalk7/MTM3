@@ -51,8 +51,6 @@ public :
 
 ostream& operator<<(ostream& os, const Participant& participant);
 //---------------------------------------------------
-
-
 class Voter
 {
     // relevant private members can be defined here, if necessary.
@@ -61,7 +59,7 @@ class Voter
     int m_times_of_votes;
 
 public :
-    Voter(string state, VoterType type = Regular); // votes = 0
+    explicit Voter(const string& state, VoterType type = Regular);
 
     // get :
     int timesOfVotes() const;
@@ -89,16 +87,16 @@ struct Vote
 // ALL is public here.
 // need to define ONLY data members and c'tr and d'tr.
 // NO NEED to define anything else.
-    Vote(Voter voter, string state1,
-         string state2 = "",
-         string state3 = "",
-         string state4 = "",
-         string state5 = "",
-         string state6 = "",
-         string state7 = "",
-         string state8 = "",
-         string state9 = "",
-         string state10 = "");
+    Vote(const Voter& voter, const string& state1,
+         const string& state2 = "",
+         const string& state3 = "",
+         const string& state4 = "",
+         const string& state5 = "",
+         const string& state6 = "",
+         const string& state7 = "",
+         const string& state8 = "",
+         const string& state9 = "",
+         const string& state10 = "");
     ~Vote();
 
 };
