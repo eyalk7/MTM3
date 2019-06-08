@@ -43,7 +43,7 @@ public :
 
     // set functions:
     void update(string name, int length, string singer);
-    void updateRegistered(bool registered);
+    void updateRegistered(bool registered); // public, but the assumption is only specific MainControl functions use
 
 // NO friend is allowed here. :(
 
@@ -109,7 +109,7 @@ struct Vote
 class MainControl
 {
 // relevant private members can be defined here, if necessary.
-    Participant* m_participants; // LINKED LISTS??? (need sort :/)
+    Participant* m_participants; //
     int m_num_of_participants;
     int m_max_song_length;
     int m_max_participants;
@@ -133,6 +133,7 @@ public :
 
 
 // Also it's allowed here to define friend.
+    friend ostream& operator<<(ostream& os, const MainControl& eurovision);
 
 };
 
