@@ -117,9 +117,6 @@ class MainControl
     Phase phase;
 
 public :
-
-    Phase getPhase();
-
 // need to define here possibly c'tr and d'tr and ONLY methods that
 // are mentioned and demonstrated in the test example that has been published.
 // NO OTHER METHODS SHOULD APPEAR HERE.
