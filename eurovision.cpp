@@ -163,13 +163,19 @@ MainControl& MainControl::operator-=(const Participant& participant) {
     if (m_phase != Registration || !participant.isRegistered()) return *this;
 
     // else, remove the participant
-    // iterate on the participants list, find the participant and remove it
+    // iterate on the participants list, find the participant and remove it, and return
     ParticipantNode* iterator = m_participants;
-    while (iterator->participant.s)
-
+    string participant_state = participant.state();
+    while (iterator->next->participant.state() != participant_state){
+        iterator = iterator->next;
+    }
+    ParticipantNode to_delete = iterator->next;
+    iterator->next = iterator->next->next;
+    delete to_delete;
+    return *this;
 }
 MainControl& MainControl::operator+=(const Vote& vote) {
-
+    // if voter state
 }
 
 ostream& operator<<(ostream& os, const MainControl& eurovision) {
