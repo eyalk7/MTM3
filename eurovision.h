@@ -109,7 +109,13 @@ struct Vote
 class MainControl
 {
 // relevant private members can be defined here, if necessary.
-    Participant* m_participants; //
+    // struct for participants list in MainControl element
+    typedef struct ParticipantNode_t {
+        Participant& participant;
+        struct ParticipantNode_t *next;
+    } *ParticipantNode;
+
+    ParticipantNode m_participants; //
     int m_num_of_participants;
     int m_max_song_length;
     int m_max_participants;

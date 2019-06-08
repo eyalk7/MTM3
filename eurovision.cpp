@@ -2,37 +2,51 @@
 
 //---------------------------------------------------
 
-Participant::Participant(string state, string song, int song_length, string singer) {
-
+Participant::Participant(string state, string song, int song_length, string singer) :
+    m_state(state), m_song(song), m_song_length(song_length), m_singer(singer) {
 }
 
 // get functions:
 string Participant::state() const {
-
+    return m_state;
 }
 string Participant::song() const {
-
+    return m_song;
 }
 string Participant::singer() const {
-
+    return m_singer;
 }
 int Participant::timeLength() const {
-
+    return m_song_length;
 }
 bool Participant::isRegistered() const {
-
+    return m_is_registered;
 }
 
 // set functions:
 void Participant::update(string name, int length, string singer) {
+    // if participant is registered can't do update
+    if (m_is_registered) return;
 
+    // check values and if they are valid, update the participant
+    if (name != "") {
+        m_song = name;
+    }
+    if (length > 0) {
+        m_song_length = length;
+    }
+    if (singer != "") {
+        m_singer = singer;
+    }
 }
 void Participant::updateRegistered(bool registered) {
-
+    m_is_registered = registered;
 }
 
 ostream& operator<<(ostream& os, const Participant& participant) {
-
+    // [Israel/Song_Israel/175/Singer_Israel]
+    os << "[" << participant.state() << "/" << participant.song() << "/" << participant.timeLength() << "/" << participant.singer() << "]";
+    return os;
 }
 //---------------------------------------------------
 
@@ -78,7 +92,7 @@ Vote::~Vote() {
 
 // -----------------------------------------------------------
 
-Phase MainControl::getPhase() { // static function
+Phase MainControl::getPhase() {
 
 }
 
