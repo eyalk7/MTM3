@@ -1,8 +1,10 @@
 #include "eurovision.h"
 
+using std::endl;
+
 //---------------------------------------------------
 
-Participant::Participant(string state, string song, int song_length, string singer) :
+Participant::Participant(const string& state, const string& song, int song_length, const string& singer) :
     m_state(state), m_song(song), m_song_length(song_length), m_singer(singer) {
 }
 
@@ -24,7 +26,7 @@ bool Participant::isRegistered() const {
 }
 
 // set functions:
-void Participant::update(string name, int length, string singer) {
+void Participant::update(const string& name, int length, const string& singer) {
     // if participant is registered can't do update
     if (m_is_registered) return;
 
@@ -91,11 +93,6 @@ Vote::~Vote() {
 
 // -----------------------------------------------------------
 
-Phase MainControl::getPhase() {
-
-}
-
-
 MainControl::MainControl(int max_song_length,
                          int max_participants,
                          int max_regular_votes) {
@@ -105,7 +102,7 @@ MainControl::MainControl(int max_song_length,
 void MainControl::setPhase(Phase phase) { // not static!
 
 }
-bool MainControl::participate(string state) const {
+bool MainControl::participate(const string& state) const {
 
 }
 bool MainControl::legalParticipant(const Participant& participant) const {

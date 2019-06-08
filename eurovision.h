@@ -31,7 +31,7 @@ public :
     // are mentioned and demonstrated in the test example that has been published.
     // NO OTHER METHODS SHOULD APPEAR HERE.
 
-    Participant(string state, string song, int song_length, string singer);
+    Participant(const string& state, const string& song, int song_length, const string& singer);
     Participant(Participant const&) = delete;
 
     // get functions:
@@ -42,7 +42,7 @@ public :
     bool isRegistered() const;
 
     // set functions:
-    void update(string name, int length, string singer);
+    void update(const string& name, int length, const string& singer);
     void updateRegistered(bool registered); // public, but the assumption is only specific MainControl functions use
 
 // NO friend is allowed here. :(
@@ -128,7 +128,7 @@ public :
     MainControl(int max_song_length = 180, int max_participants = 26, int max_regular_votes = 5);
 
     void setPhase(Phase phase);
-    bool participate(string state) const;
+    bool participate(const string& state) const;
     bool legalParticipant(const Participant& participant) const;
 
     MainControl& operator+=(const Participant& participant);
