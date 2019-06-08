@@ -109,19 +109,16 @@ struct Vote
 class MainControl
 {
 // relevant private members can be defined here, if necessary.
-    static Phase phase;
-
     Participant* m_participants; // LINKED LISTS??? (need sort :/)
     int m_num_of_participants;
-
     int m_max_song_length;
     int m_max_participants;
     int m_max_regular_votes;
+    Phase phase;
 
 public :
 
-
-    static Phase getPhase();
+    Phase getPhase();
 
 // need to define here possibly c'tr and d'tr and ONLY methods that
 // are mentioned and demonstrated in the test example that has been published.
@@ -129,7 +126,7 @@ public :
 
     MainControl(int max_song_length = 180, int max_participants = 26, int max_regular_votes = 5);
 
-    void setPhase(Phase phase); // not static!
+    void setPhase(Phase phase);
     bool participate(string state) const;
     bool legalParticipant(const Participant& participant) const;
 

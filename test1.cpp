@@ -223,11 +223,11 @@ cout << eurovision.legalParticipant(p3); // will display 0 (false)
 
 TEST("1.9")
   cout << p2 << endl;
-  p2.update("", 169, "");  // can not be done. it is not Registration phase.
+  p2.update("", 169, "");  // can not be done. already registered to the system
   cout << p2  << endl;
 
   cout << p3  << endl;
-  p3.update("", 179, "");  // can not be done. it's not Registration phase.
+  p3.update("", 179, "");  // can be done. not Registered yet.
   cout << p3  << endl;
 
   eurovision += p3; //can not be done. it's not Registration phase.
