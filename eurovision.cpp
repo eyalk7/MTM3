@@ -94,33 +94,78 @@ Vote::~Vote() {
 MainControl::MainControl(int max_song_length,
                          int max_participants,
                          int max_regular_votes) :
-                         m_participants = NULL,
                          m_num_of_participants(0),
                          m_max_song_length(max_song_length),
                          m_max_participants(max_participants),
                          m_max_regular_votes(max_regular_votes),
                          m_phase(Registration){
+    Participant& dummy = new Participant("","",0,"");
+    ParticipantNode& dummy_node = new ParticipantNode(dummy, NULL);
 }
 
 void MainControl::setPhase(Phase phase) {
     m_phase = phase;
 }
 bool MainControl::participate(string state) const {
+    // iterate on the participants list in the MainControl element
     ParticipantNode* iterator = m_participants;
     while (iterator != NULL) {
+        // if the state is in the list return true
         if (iterator->participant.state() == state) return true;
+
+        iterator = iterator->next;
     }
 
+    // else return false
     return false;
 }
 bool MainControl::legalParticipant(const Participant& participant) const {
+    if (participant.state() == "" || participant.singer() == "" || participant.song() == "") return false;
+    int time_length = participant.timeLength();
+    if (time_length < 1 || time_length > m_max_song_length) return false;
 
+    //else
+    return true;
 }
 
 MainControl& MainControl::operator+=(const Participant& participant) {
+    // if not registratino phase, or reached max participants,
+    //  or state already registered, or participant not legal - can't register
+    if (m_phase != Registration) return *this;
+    if (m_max_participants <= m_num_of_participants) return *this;
+    if (participate(participant.state())) return *this;
+    if (!legalParticipant(participant)) return *this;
 
+    // else, register the participant
+    ParticipantNode& new_node = new ParticipantNode(participant, NULL);
+    // iterate on the participants list in the MainControl element and add the participant in alphabetic order
+    ParticipantNode* iterator = m_participants;
+    while (iterator->next != NULL){
+        // if the next participant is bigger alphabeticly, insert the new participant before it, and return
+        // update the is_registered value on participant
+        if (participant.state() < iterator->next->participant.state()) {
+            new_node->next = iterator->next;
+            iterator->next = new_node;
+            participant.updateRegistered(true);
+            return *this;
+        }
+
+        // else, go to the next participant in the list
+        iterator = iterator->next;
+    }
+
+    // if reached end of list, insert the new participant in the end, and return
+    iterator->next = new_node;
+    return *this;
 }
 MainControl& MainControl::operator-=(const Participant& participant) {
+    // if not Registration phase or if the participant not registered, just return
+    if (m_phase != Registration || !participant.isRegistered()) return *this;
+
+    // else, remove the participant
+    // iterate on the participants list, find the participant and remove it
+    ParticipantNode* iterator = m_participants;
+    while (iterator->participant.s)
 
 }
 MainControl& MainControl::operator+=(const Vote& vote) {
