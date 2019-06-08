@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.13)  # CMake version check
-project(MTM_EX3)               # Create project "simple_example"
-set(CMAKE_CXX_STANDARD 14)            # Enable c++14 standard
+cmake_minimum_required(VERSION 3.13)
+project(untitled1)
 
-# Add main.cpp file of project root directory as source file
-set(SOURCE_FILES test1.cpp eurovision.cpp)
+set(CMAKE_CXX_STANDARD 14)
+
+add_executable(untitled1 test1.cpp eurovision.cpp)
