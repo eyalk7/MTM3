@@ -31,7 +31,7 @@ public :
     // are mentioned and demonstrated in the test example that has been published.
     // NO OTHER METHODS SHOULD APPEAR HERE.
 
-    Participant(const string& state, const string& song, int song_length, const string& singer);
+    Participant(string state, string song, int song_length, string singer);
     Participant(Participant const&) = delete;
 
     // get functions:
@@ -42,8 +42,8 @@ public :
     bool isRegistered() const;
 
     // set functions:
-    void update(const string& name, int length, const string& singer);
-    void updateRegistered(bool registered);
+    void update(string name, int length, string singer);
+    void updateRegistered(bool registered); // public, but the assumption is only specific MainControl functions use
 
 // NO friend is allowed here. :(
 
@@ -61,7 +61,7 @@ class Voter
     int m_times_of_votes;
 
 public :
-    explicit Voter(const string& state, VoterType type = Regular);
+    Voter(string state, VoterType type = Regular); // votes = 0
 
     // get :
     int timesOfVotes() const;
@@ -89,16 +89,16 @@ struct Vote
 // ALL is public here.
 // need to define ONLY data members and c'tr and d'tr.
 // NO NEED to define anything else.
-    Vote(const Voter& voter, const string& state1,
-         const string& state2 = "",
-         const string& state3 = "",
-         const string& state4 = "",
-         const string& state5 = "",
-         const string& state6 = "",
-         const string& state7 = "",
-         const string& state8 = "",
-         const string& state9 = "",
-         const string& state10 = "");
+    Vote(Voter voter, string state1,
+         string state2 = "",
+         string state3 = "",
+         string state4 = "",
+         string state5 = "",
+         string state6 = "",
+         string state7 = "",
+         string state8 = "",
+         string state9 = "",
+         string state10 = "");
     ~Vote();
 
 };
@@ -109,26 +109,28 @@ struct Vote
 class MainControl
 {
 // relevant private members can be defined here, if necessary.
-    static Phase phase;
+    // struct for participants list in MainControl element
+    typedef struct ParticipantNode_t {
+        Participant& participant;
+        struct ParticipantNode_t *next;
+    } *ParticipantNode;
 
-    Participant* m_participants; // LINKED LISTS??? (need sort :/)
+    ParticipantNode m_participants; //
     int m_num_of_participants;
-
     int m_max_song_length;
     int m_max_participants;
     int m_max_regular_votes;
+    Phase phase;
 
 public :
-    static Phase getPhase();
-
 // need to define here possibly c'tr and d'tr and ONLY methods that
 // are mentioned and demonstrated in the test example that has been published.
 // NO OTHER METHODS SHOULD APPEAR HERE.
 
-    explicit MainControl(int max_song_length = 180, int max_participants = 26, int max_regular_votes = 5);
+    MainControl(int max_song_length = 180, int max_participants = 26, int max_regular_votes = 5);
 
-    void setPhase(Phase phase); // not static!
-    bool participate(const string& state) const;
+    void setPhase(Phase phase);
+    bool participate(string state) const;
     bool legalParticipant(const Participant& participant) const;
 
     MainControl& operator+=(const Participant& participant);
@@ -137,6 +139,7 @@ public :
 
 
 // Also it's allowed here to define friend.
+    friend ostream& operator<<(ostream& os, const MainControl& eurovision);
 
 };
 
