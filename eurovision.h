@@ -120,7 +120,7 @@ class MainControl
     int m_max_song_length;
     int m_max_participants;
     int m_max_regular_votes;
-    Phase phase;
+    Phase m_phase;
 
 public :
 // need to define here possibly c'tr and d'tr and ONLY methods that

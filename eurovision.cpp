@@ -92,22 +92,27 @@ Vote::~Vote() {
 
 // -----------------------------------------------------------
 
-Phase MainControl::getPhase() {
-
-}
-
-
 MainControl::MainControl(int max_song_length,
                          int max_participants,
-                         int max_regular_votes) {
-
+                         int max_regular_votes) :
+                         m_participants = NULL,
+                         m_num_of_participants(0),
+                         m_max_song_length(max_song_length),
+                         m_max_participants(max_participants),
+                         m_max_regular_votes(max_regular_votes),
+                         m_phase(Registration){
 }
 
-void MainControl::setPhase(Phase phase) { // not static!
-
+void MainControl::setPhase(Phase phase) {
+    m_phase = phase;
 }
 bool MainControl::participate(string state) const {
+    ParticipantNode* iterator = m_participants;
+    while (iterator != NULL) {
+        if (iterator->participant.state() == state) return true;
+    }
 
+    return false;
 }
 bool MainControl::legalParticipant(const Participant& participant) const {
 
