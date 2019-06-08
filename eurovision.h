@@ -14,6 +14,7 @@ enum VoterType { All, Regular, Judge };
 enum Phase { Registration, Contest, Voting };
 
 /**  enum for number of points in each rank */
+const int NUMBER_OF_RANKINGS = 10;
 typedef enum {
     TENTH_PLACE = 1,
     NINTH_PLACE,
@@ -120,17 +121,21 @@ class MainControl
 {
 // relevant private members can be defined here, if necessary.
     // struct for participants list in MainControl element
-    typedef struct ParticipantNode_t {
+    struct ParticipantNode {
         Participant& participant;
+        ParticipantNode *next;
         int m_regular_votes;
         int m_judge_votes;
-        struct ParticipantNode_t *next;
-    } *ParticipantNode;
-    // internal functions for the ParticipantNode struct
-    ParticipantNode& findPrevNode(const string& state);
-    void addPointsIfLegal(const Vote& vote, const string& voted_state, int num_of_points);
 
-    ParticipantNode m_participants; //
+        explicit ParticipantNode(Participant& source_participant) :
+        participant(source_participant), next(NULL), m_regular_votes(0), m_judge_votes(0) {
+        }
+    };
+    // internal functions for the ParticipantNode struct
+    ParticipantNode& findPrevNode(const string& state) const ;
+    void addPointsIfLegal(const Vote& vote, const string& voted_state, int num_of_points) const ;
+
+    ParticipantNode *m_participants; //
     int m_num_of_participants;
     int m_max_song_length;
     int m_max_participants;
@@ -142,13 +147,13 @@ public :
 // are mentioned and demonstrated in the test example that has been published.
 // NO OTHER METHODS SHOULD APPEAR HERE.
 
-    MainControl(int max_song_length = 180, int max_participants = 26, int max_regular_votes = 5);
-
+    explicit MainControl(int max_song_length = 180, int max_participants = 26, int max_regular_votes = 5);
+    ~MainControl();
     void setPhase(Phase phase);
     bool participate(const string& state) const;
     bool legalParticipant(const Participant& participant) const;
 
-    MainControl& operator+=(const Participant& participant);
+    MainControl& operator+=(Participant& participant);
     MainControl& operator-=(const Participant& participant);
     MainControl& operator+=(const Vote& vote);
 
