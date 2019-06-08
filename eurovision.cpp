@@ -144,6 +144,7 @@ MainControl& MainControl::operator+=(const Participant& participant) {
         new_node->next = prev_node->next;
         prev_node->next = new_node;
         participant.updateRegistered(true);
+        m_num_of_participants++;
         return *this;
     }
     // if reached end of list, insert the new participant in the end, and return
@@ -160,6 +161,7 @@ MainControl& MainControl::operator-=(const Participant& participant) {
     ParticipantNode to_delete = prev_node->next;
     prev_node->next = prev_node->next->next;
     delete to_delete;
+    m_num_of_participants--;
     return *this;
 }
 MainControl& MainControl::operator+=(const Vote& vote) {
@@ -188,7 +190,23 @@ MainControl& MainControl::operator+=(const Vote& vote) {
 }
 
 ostream& operator<<(ostream& os, const MainControl& eurovision) {
+    MainControl::ParticipantNode& iterator = eurovision.m_participants->next; // iterator for the participants list
 
+    if (eurovision.m_phase == Registration) {
+        os << "Registration" << endl;
+        while (iterator != NULL) {
+            os << iterator->participant << endl;
+            iterator = iterator->next;
+        }
+        return os;
+    } else if (eurovision.m_phase == Voting) {
+        os << "Voting" << endl;
+        while (iterator != NULL) {
+            os << iterator->participant.state() << " : " << "Regular(" << iterator->m_regular_votes << ") Judge(" << iterator->m_judge_votes << ")" << endl;
+            iterator = iterator->next;
+        }
+    }
+    return os;
 }
 
 // --------------INTERNAL FUNCTIONS---------------------------
@@ -209,7 +227,14 @@ void MainControl::addPointsIfLegal(const Vote& vote, const string& voted_state, 
     // checks that the voted state participates & that the voted state != voting state
     if (participate(voted_state) && vote.m_voter.state() != voted_state){
         ParticipantNode& prev_node = findPrevNode(vote.m_states[0]);
-        prev_node->next->m_regular_votes += num_of_points; // add points to the voted state
+
+        // add points to the voted state
+        if (vote.m_voter.voterType() == Regular) { // regular voter
+            prev_node->next->m_regular_votes += num_of_points;
+        } else { // judge voter
+            prev_node->next->m_judge_votes += num_of_points;
+        }
+
         ++vote.m_voter; // increments the number of times the voter has voted
     }
 
