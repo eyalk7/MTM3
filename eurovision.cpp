@@ -114,7 +114,7 @@ MainControl::MainControl(int max_song_length,
 MainControl::~MainControl() {
     // iterate on the participants list & delete all nodes
     ParticipantNode* iterator = m_participants->next;
-    while (iterator->next != NULL) {
+    while (iterator != NULL) {
         ParticipantNode* to_delete = iterator;
         iterator = iterator->next;
         delete to_delete;
