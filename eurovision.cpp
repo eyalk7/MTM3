@@ -1,8 +1,10 @@
 #include "eurovision.h"
 
+using std::endl;
+
 //---------------------------------------------------
 
-Participant::Participant(string state, string song, int song_length, string singer) :
+Participant::Participant(const string& state, const string& song, int song_length, const string& singer) :
     m_state(state), m_song(song), m_song_length(song_length), m_singer(singer) {
 }
 
@@ -24,7 +26,7 @@ bool Participant::isRegistered() const {
 }
 
 // set functions:
-void Participant::update(string name, int length, string singer) {
+void Participant::update(const string& name, int length, const string& singer) {
     // if participant is registered can't do update
     if (m_is_registered) return;
 
@@ -108,13 +110,10 @@ void MainControl::setPhase(Phase phase) {
 }
 bool MainControl::participate(string state) const {
     // iterate on the participants list in the MainControl element
-    ParticipantNode* iterator = m_participants;
-    while (iterator != NULL) {
-        // if the state is in the list return true
-        if (iterator->participant.state() == state) return true;
+    ParticipantNode& prev_node = findPrevNode(state);
 
-        iterator = iterator->next;
-    }
+    // if the state is in the list return true
+    if (prev_node->next != NULL && prev_node->next->participant.state() == state) return true;
 
     // else return false
     return false;
@@ -138,24 +137,17 @@ MainControl& MainControl::operator+=(const Participant& participant) {
 
     // else, register the participant
     ParticipantNode& new_node = new ParticipantNode(participant, NULL);
-    // iterate on the participants list in the MainControl element and add the participant in alphabetic order
-    ParticipantNode* iterator = m_participants;
-    while (iterator->next != NULL){
-        // if the next participant is bigger alphabeticly, insert the new participant before it, and return
-        // update the is_registered value on participant
-        if (participant.state() < iterator->next->participant.state()) {
-            new_node->next = iterator->next;
-            iterator->next = new_node;
-            participant.updateRegistered(true);
-            return *this;
-        }
 
-        // else, go to the next participant in the list
-        iterator = iterator->next;
+    // add the participant in alphabetic order and return
+    ParticipantNode& prev_node = findPrevNode(participant.state());
+    if (prev_node->next != NULL) {
+        new_node->next = prev_node->next;
+        prev_node->next = new_node;
+        participant.updateRegistered(true);
+        return *this;
     }
-
     // if reached end of list, insert the new participant in the end, and return
-    iterator->next = new_node;
+    prev_node->next = new_node;
     return *this;
 }
 MainControl& MainControl::operator-=(const Participant& participant) {
@@ -163,23 +155,65 @@ MainControl& MainControl::operator-=(const Participant& participant) {
     if (m_phase != Registration || !participant.isRegistered()) return *this;
 
     // else, remove the participant
-    // iterate on the participants list, find the participant and remove it, and return
-    ParticipantNode* iterator = m_participants;
-    string participant_state = participant.state();
-    while (iterator->next->participant.state() != participant_state){
-        iterator = iterator->next;
-    }
-    ParticipantNode to_delete = iterator->next;
-    iterator->next = iterator->next->next;
+    // find the participant and remove it, and return
+    ParticipantNode& prev_node = findPrevNode(participant.state());
+    ParticipantNode to_delete = prev_node->next;
+    prev_node->next = prev_node->next->next;
     delete to_delete;
     return *this;
 }
 MainControl& MainControl::operator+=(const Vote& vote) {
-    // if voter state
+    if (m_phase != Voting) return *this; // if the MainControl element's phase isn't "Voting" - return
+    if (!participate(voter_state)) return *this; // if the voter's state doesn't participates  - return
+
+    int times_of_votes = vote.m_voter.timesOfVotes();
+    if (vote.m_voter.voterType() == Regular) { // regular voter
+        if (times_of_votes >= m_max_regular_votes) return *this; // reached voting limit - return
+        addPointsIfLegal(vote, vote.m_states[0], 1); // add point to voted state (only if participates & diff from the voting state)
+    }
+
+    else { // voterType == Judge
+        if (times_of_votes > 0) return *this; // reached voting limit - return
+        static const Ranking ranking[NUMBER_OF_RANKINGS] = { // points table according to ranking
+                FIRST_PLACE, SECOND_PLACE, THIRD_PLACE, FOURTH_PLACE,
+                FIFTH_PLACE, SIXTH_PLACE, SEVENTH_PLACE, EIGHT_PLACE,
+                NINTH_PLACE, TENTH_PLACE
+        };
+        for (int i=0; i < 10; i++) {
+            addPointsIfLegal(vote, vote.m_states[i], ranking[i]); // add points accroding to ranking (only if participates & diff from the voting state)
+        }
+    }
+
+    return *this;
 }
 
 ostream& operator<<(ostream& os, const MainControl& eurovision) {
 
 }
 
+// --------------INTERNAL FUNCTIONS---------------------------
+
+ParticipantNode& MainControl::findPrevNode(const string& state) {
+    // iterate on the participants list,
+    // find the last participant that smaller alphabeticly than the given state
+    // and return it
+    ParticipantNode* iterator = m_participants;
+    while (iterator->next != NULL && iterator->next->participant.state() < state){
+        iterator = iterator->next;
+    }
+
+    return *iterator;
+}
+
+void MainControl::addPointsIfLegal(const Vote& vote, const string& voted_state, int num_of_points) {
+    // checks that the voted state participates & that the voted state != voting state
+    if (participate(voted_state) && vote.m_voter.state() != voted_state){
+        ParticipantNode& prev_node = findPrevNode(vote.m_states[0]);
+        prev_node->next->m_regular_votes += num_of_points; // add points to the voted state
+        ++vote.m_voter; // increments the number of times the voter has voted
+    }
+
+}
+
 // -----------------------------------------------------------
+

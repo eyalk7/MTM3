@@ -13,6 +13,20 @@ using std::ostream;
 enum VoterType { All, Regular, Judge };
 enum Phase { Registration, Contest, Voting };
 
+/**  enum for number of points in each rank */
+typedef enum {
+    TENTH_PLACE = 1,
+    NINTH_PLACE,
+    EIGHT_PLACE,
+    SEVENTH_PLACE,
+    SIXTH_PLACE,
+    FIFTH_PLACE,
+    FOURTH_PLACE,
+    THIRD_PLACE,
+    SECOND_PLACE = 10,
+    FIRST_PLACE = 12
+} Ranking;
+
 //---------------------------------------------------
 
 class Participant
@@ -23,15 +37,13 @@ class Participant
     string m_singer;
     int m_song_length;
     bool m_is_registered;
-    int m_regular_votes;
-    int m_judge_votes;
 
 public :
     // need to define here possibly c'tr and d'tr and ONLY methods that
     // are mentioned and demonstrated in the test example that has been published.
     // NO OTHER METHODS SHOULD APPEAR HERE.
 
-    Participant(string state, string song, int song_length, string singer);
+    Participant(const string& state, const string& song, int song_length, const string& singer);
     Participant(Participant const&) = delete;
 
     // get functions:
@@ -42,7 +54,7 @@ public :
     bool isRegistered() const;
 
     // set functions:
-    void update(string name, int length, string singer);
+    void update(const string& name, int length, const string& singer);
     void updateRegistered(bool registered); // public, but the assumption is only specific MainControl functions use
 
 // NO friend is allowed here. :(
@@ -110,8 +122,13 @@ class MainControl
     // struct for participants list in MainControl element
     typedef struct ParticipantNode_t {
         Participant& participant;
+        int m_regular_votes;
+        int m_judge_votes;
         struct ParticipantNode_t *next;
     } *ParticipantNode;
+    // internal functions for the ParticipantNode struct
+    ParticipantNode& findPrevNode(const string& state);
+    void addPointsIfLegal(const Vote& vote, const string& voted_state, int num_of_points);
 
     ParticipantNode m_participants; //
     int m_num_of_participants;
@@ -128,7 +145,7 @@ public :
     MainControl(int max_song_length = 180, int max_participants = 26, int max_regular_votes = 5);
 
     void setPhase(Phase phase);
-    bool participate(string state) const;
+    bool participate(const string& state) const;
     bool legalParticipant(const Participant& participant) const;
 
     MainControl& operator+=(const Participant& participant);
