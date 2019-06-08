@@ -3,7 +3,7 @@
 //---------------------------------------------------
 
 Participant::Participant(const string& state, const string& song, int song_length, const string& singer) :
-    m_state(state), m_song(song), m_song_length(song_length), m_singer(singer) {
+    m_state(state), m_song(song),  m_singer(singer), m_song_length(song_length), m_is_registered(false) {
 }
 
 // get functions:
