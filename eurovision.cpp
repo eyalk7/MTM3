@@ -1,7 +1,5 @@
 #include "eurovision.h"
 
-using std::endl;
-
 //---------------------------------------------------
 
 Participant::Participant(const string& state, const string& song, int song_length, const string& singer) :
@@ -46,8 +44,8 @@ void Participant::updateRegistered(bool registered) {
 }
 
 ostream& operator<<(ostream& os, const Participant& participant) {
-    // [Israel/Song_Israel/175/Singer_Israel]
-    os << "[" << participant.state() << "/" << participant.song() << "/" << participant.timeLength() << "/" << participant.singer() << "]";
+    os << "[" << participant.state() << "/" << participant.song() << "/";
+    os << participant.timeLength() << "/" << participant.singer() << "]";
     return os;
 }
 //---------------------------------------------------
@@ -72,15 +70,21 @@ Voter& Voter::operator++() {
 }
 
 ostream& operator<<(ostream& os, const Voter& voter) {
-    return os << "<" << voter.state() << "/" << voter.voterType() << ">" << endl;
+    string type;
+    if (voter.voterType() == Regular) {
+        type = "Regular";
+    } else {
+        type = "Judge";
+    }
+    return os << "<" << voter.state() << "/" << type << ">";
 }
 // -----------------------------------------------------------
 
-Vote::Vote(const Voter& voter, const string& state1,
+Vote::Vote(Voter& voter, const string& state1,
            const string& state2, const string& state3, const string& state4,
            const string& state5, const string& state6, const string& state7,
            const string& state8, const string& state9, const string& state10) :
-        m_voter(voter.state(), voter.voterType()) {
+        m_voter(voter) {
     // voter.state != states ??
     m_states = new string[10] {
             state1, state2, state3, state4, state5, state6, state7, state8, state9, state10
@@ -101,14 +105,22 @@ MainControl::MainControl(int max_song_length,
                          m_max_participants(max_participants),
                          m_max_regular_votes(max_regular_votes),
                          m_phase(Registration){
+    // insert dummy node in start of participants list
     Participant* dummy = new Participant("","",0,"");
     ParticipantNode* dummy_node = new ParticipantNode(*dummy);
     m_participants = dummy_node;
 }
 
 MainControl::~MainControl() {
-    delete &(m_participants->participant);
-    delete m_participants;
+    // iterate on the participants list & delete all nodes
+    ParticipantNode* iterator = m_participants->next;
+    while (iterator->next != NULL) {
+        ParticipantNode* to_delete = iterator;
+        iterator = iterator->next;
+        delete to_delete;
+    }
+    delete &(m_participants->participant); // delete the dummy participant
+    delete m_participants; // delete the dummy node
 }
 
 void MainControl::setPhase(Phase phase) {
@@ -117,9 +129,10 @@ void MainControl::setPhase(Phase phase) {
 bool MainControl::participate(const string& state) const {
     // iterate on the participants list in the MainControl element
     ParticipantNode& prev_node = findPrevNode(state);
+    ParticipantNode* candidate_node = prev_node.next;
 
     // if the state is in the list return true
-    if (prev_node.next != NULL && prev_node.next->participant.state() == state) return true;
+    if (candidate_node != NULL && (candidate_node->participant).state() == state) return true;
 
     // else return false
     return false;
@@ -134,7 +147,7 @@ bool MainControl::legalParticipant(const Participant& participant) const {
 }
 
 MainControl& MainControl::operator+=(Participant& participant) {
-    // if not registratino phase, or reached max participants,
+    // if not Registration phase, or reached max participants,
     //  or state already registered, or participant not legal - can't register
     if (m_phase != Registration) return *this;
     if (m_max_participants <= m_num_of_participants) return *this;
@@ -143,75 +156,73 @@ MainControl& MainControl::operator+=(Participant& participant) {
 
     // else, register the participant
     ParticipantNode* new_node = new ParticipantNode(participant);
+    participant.updateRegistered(true); // change is_registered to true
+    m_num_of_participants++; // increment num of participants in MainControl
 
     // add the participant in alphabetic order and return
     ParticipantNode& prev_node = findPrevNode(participant.state());
-    if (prev_node.next != NULL) {
+    if (prev_node.next != NULL) { // not end of list
         new_node->next = prev_node.next;
         prev_node.next = new_node;
-        participant.updateRegistered(true);
-        m_num_of_participants++;
         return *this;
     }
-    // if reached end of list, insert the new participant in the end, and return
+    // else, reached end of list
     prev_node.next = new_node;
     return *this;
 }
-MainControl& MainControl::operator-=(const Participant& participant) {
+MainControl& MainControl::operator-=(Participant& participant) {
     // if not Registration phase or if the participant not registered, just return
     if (m_phase != Registration || !participant.isRegistered()) return *this;
 
     // else, remove the participant
-    // find the participant and remove it, and return
     ParticipantNode& prev_node = findPrevNode(participant.state());
     ParticipantNode* to_delete = prev_node.next;
     prev_node.next = prev_node.next->next;
     delete to_delete;
-    m_num_of_participants--;
+
+    participant.updateRegistered(false); // update is_registered in participant to false
+    m_num_of_participants--; // reduce count of participants in MainControl
     return *this;
 }
 MainControl& MainControl::operator+=(const Vote& vote) {
     if (m_phase != Voting) return *this; // if the MainControl element's phase isn't "Voting" - return
     if (!participate(vote.m_voter.state())) return *this; // if the voter's state doesn't participates  - return
 
-    int times_of_votes = vote.m_voter.timesOfVotes();
-    if (vote.m_voter.voterType() == Regular) { // regular voter
-        if (times_of_votes >= m_max_regular_votes) return *this; // reached voting limit - return
-        addPointsIfLegal(vote, vote.m_states[0], 1); // add point to voted state (only if participates & diff from the voting state)
-    }
+    static const Ranking ranking[NUMBER_OF_RANKINGS] = { // points table for judges points
+            FIRST_PLACE, SECOND_PLACE, THIRD_PLACE, FOURTH_PLACE,
+            FIFTH_PLACE, SIXTH_PLACE, SEVENTH_PLACE, EIGHT_PLACE,
+            NINTH_PLACE, TENTH_PLACE
+    };
 
-    else { // voterType == Judge
-        if (times_of_votes > 0) return *this; // reached voting limit - return
-        static const Ranking ranking[NUMBER_OF_RANKINGS] = { // points table according to ranking
-                FIRST_PLACE, SECOND_PLACE, THIRD_PLACE, FOURTH_PLACE,
-                FIFTH_PLACE, SIXTH_PLACE, SEVENTH_PLACE, EIGHT_PLACE,
-                NINTH_PLACE, TENTH_PLACE
-        };
+    // else, add the points, according to voterType
+    if (vote.m_voter.voterType() == Regular) { // regular voter
+        if (vote.m_voter.timesOfVotes() >= m_max_regular_votes) return *this; // reached voting limit - return
+        addPointsIfLegal(vote, vote.m_states[0], 1); // add point to voted state
+    } else { // voterType == Judge
+        if (vote.m_voter.timesOfVotes() > 0) return *this; // reached voting limit - return
         for (int i=0; i < 10; i++) {
-            addPointsIfLegal(vote, vote.m_states[i], ranking[i]); // add points accroding to ranking (only if participates & diff from the voting state)
+            addPointsIfLegal(vote, vote.m_states[i], ranking[i]);  // add points accroding to ranking
         }
     }
-
     return *this;
 }
 
 ostream& operator<<(ostream& os, const MainControl& eurovision) {
     MainControl::ParticipantNode* iterator = eurovision.m_participants->next; // iterator for the participants list
 
+    os << "{" << endl << MainControl::getPhaseText(eurovision.m_phase) << endl;
     if (eurovision.m_phase == Registration) {
-        os << "Registration" << endl;
         while (iterator != NULL) {
             os << iterator->participant << endl;
             iterator = iterator->next;
         }
-        return os;
     } else if (eurovision.m_phase == Voting) {
-        os << "Voting" << endl;
         while (iterator != NULL) {
             os << iterator->participant.state() << " : " << "Regular(" << iterator->m_regular_votes << ") Judge(" << iterator->m_judge_votes << ")" << endl;
             iterator = iterator->next;
         }
     }
+    os << "}" << endl;
     return os;
 }
 
@@ -219,32 +230,35 @@ ostream& operator<<(ostream& os, const MainControl& eurovision) {
 
 MainControl::ParticipantNode& MainControl::findPrevNode(const string& state) const {
     // iterate on the participants list,
-    // find the last participant that smaller alphabeticly than the given state
-    // and return it
+    // return the last participant that smaller alphabeticly than the given state
     ParticipantNode* iterator = m_participants;
     while (iterator->next != NULL && iterator->next->participant.state() < state){
         iterator = iterator->next;
     }
-
     return *iterator;
 }
 
 void MainControl::addPointsIfLegal(const Vote& vote, const string& voted_state, int num_of_points) const {
-    // checks that the voted state participates & that the voted state != voting state
-    if (participate(voted_state) && vote.m_voter.state() != voted_state){
-        ParticipantNode& prev_node = findPrevNode(vote.m_states[0]);
+    // if the voted state doesn't participates or voted state == voting state, return
+    if (!participate(voted_state) || vote.m_voter.state() == voted_state) return;
 
-        // add points to the voted state
-        if (vote.m_voter.voterType() == Regular) { // regular voter
-            prev_node.next->m_regular_votes += num_of_points;
-        } else { // judge voter
-            prev_node.next->m_judge_votes += num_of_points;
-        }
+    ParticipantNode& prev_node = findPrevNode(voted_state);
 
-        ++(vote.m_voter); // increments the number of times the voter has voted
+    // add points to the voted state
+    if (vote.m_voter.voterType() == Regular) { // regular voter
+        prev_node.next->m_regular_votes += num_of_points;
+    } else { // judge voter
+        prev_node.next->m_judge_votes += num_of_points;
     }
 
+    ++(vote.m_voter); // increments the number of times the voter has voted
 }
 
+string MainControl::getPhaseText (Phase phase) {
+    if (phase == Registration) return "Registration";
+    if (phase == Voting) return "Voting";
+    //else
+    return "Contest";
+}
 // -----------------------------------------------------------
 

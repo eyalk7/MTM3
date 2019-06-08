@@ -7,6 +7,7 @@
 // do NOT define here : using namespace std;
 using std::string;
 using std::ostream;
+using std::endl;
 
 //---------------------------------------------------
 
@@ -94,13 +95,13 @@ ostream& operator<<(ostream& os, const Voter& voter);
 
 struct Vote
 {
-    Voter m_voter;
+    Voter& m_voter;
     string* m_states;
 
 // ALL is public here.
 // need to define ONLY data members and c'tr and d'tr.
 // NO NEED to define anything else.
-    Vote(const Voter& voter, const string& state1,
+    Vote(Voter& voter, const string& state1,
          const string& state2 = "",
          const string& state3 = "",
          const string& state4 = "",
@@ -132,8 +133,8 @@ class MainControl
         }
     };
     // internal functions for the ParticipantNode struct
-    ParticipantNode& findPrevNode(const string& state) const ;
-    void addPointsIfLegal(const Vote& vote, const string& voted_state, int num_of_points) const ;
+    ParticipantNode& findPrevNode(const string& state) const;
+    void addPointsIfLegal(const Vote& vote, const string& voted_state, int num_of_points) const;
 
     ParticipantNode *m_participants; //
     int m_num_of_participants;
@@ -141,6 +142,9 @@ class MainControl
     int m_max_participants;
     int m_max_regular_votes;
     Phase m_phase;
+
+    // internal function for the printing function
+    static string getPhaseText(Phase phase);
 
 public :
 // need to define here possibly c'tr and d'tr and ONLY methods that
@@ -154,7 +158,7 @@ public :
     bool legalParticipant(const Participant& participant) const;
 
     MainControl& operator+=(Participant& participant);
-    MainControl& operator-=(const Participant& participant);
+    MainControl& operator-=(Participant& participant);
     MainControl& operator+=(const Vote& vote);
 
 
