@@ -4,8 +4,8 @@ Last name : Rabinovich
 ID : 209193010
 Email : daniel.r@campus.technion.ac.il
 -----------------------------------------------
-First name : 
-Last name : 
-ID : 
-Email : 
+First name : Eyal
+Last name : Kushnir
+ID : 203452081
+Email : eyal.kushnir@campus.technion.ac.il
 -----------------------------------------------
