@@ -70,13 +70,16 @@ Voter& Voter::operator++() {
 }
 
 ostream& operator<<(ostream& os, const Voter& voter) {
-    string type;
-    if (voter.voterType() == Regular) {
-        type = "Regular";
-    } else {
-        type = "Judge";
+    os << "<" << voter.state() << "/";
+
+    VoterType type = voter.voterType();
+    if (type == Regular) {
+        os << "Regular";
+    } else if (type == Judge) {
+        os << "Judge";
     }
-    return os << "<" << voter.state() << "/" << type << ">";
+
+    return os << ">";
 }
 // -----------------------------------------------------------
 
@@ -104,7 +107,7 @@ MainControl::MainControl(int max_song_length,
                          m_max_song_length(max_song_length),
                          m_max_participants(max_participants),
                          m_max_regular_votes(max_regular_votes),
-                         m_phase(Registration){
+                         m_phase(Registration) {
     // insert dummy node in start of participants list
     Participant* dummy = new Participant("","",0,"");
     ParticipantNode* dummy_node = new ParticipantNode(*dummy);
@@ -134,16 +137,21 @@ bool MainControl::participate(const string& state) const {
     ParticipantNode* candidate_node = prev_node.next;
 
     // if the state is in the list return true
-    if (candidate_node != NULL && (candidate_node->participant).state() == state) return true;
-
+    if (candidate_node != NULL && (candidate_node->participant).state() == state) {
+        return true;
+    }
     // else return false
     return false;
 }
 bool MainControl::legalParticipant(const Participant& participant) const {
-    if (participant.state() == "" || participant.singer() == "" || participant.song() == "") return false;
-    int time_length = participant.timeLength();
-    if (time_length < 1 || time_length > m_max_song_length) return false;
+    if (participant.state() == "" || participant.singer() == "" || participant.song() == "") {
+        return false;
+    }
 
+    int time_length = participant.timeLength();
+    if (time_length < 1 || time_length > m_max_song_length) {
+        return false;
+    }
     //else
     return true;
 }
@@ -158,18 +166,17 @@ MainControl& MainControl::operator+=(Participant& participant) {
 
     // else, register the participant
     ParticipantNode* new_node = new ParticipantNode(participant);
-    participant.updateRegistered(true); // change is_registered to true
-    m_num_of_participants++; // increment num of participants in MainControl
 
     // add the participant in alphabetic order and return
     ParticipantNode& prev_node = findPrevNode(participant.state());
     if (prev_node.next != NULL) { // not end of list
         new_node->next = prev_node.next;
-        prev_node.next = new_node;
-        return *this;
     }
     // else, reached end of list
     prev_node.next = new_node;
+
+    participant.updateRegistered(true); // change is_registered to true
+    m_num_of_participants++; // increment num of participants in MainControl
     return *this;
 }
 MainControl& MainControl::operator-=(Participant& participant) {
@@ -190,20 +197,15 @@ MainControl& MainControl::operator+=(const Vote& vote) {
     if (m_phase != Voting) return *this; // if the MainControl element's phase isn't "Voting" - return
     if (!participate(vote.m_voter.state())) return *this; // if the voter's state doesn't participates  - return
 
-    static const Ranking ranking[NUMBER_OF_RANKINGS] = { // points table for judges points
-            FIRST_PLACE, SECOND_PLACE, THIRD_PLACE, FOURTH_PLACE,
-            FIFTH_PLACE, SIXTH_PLACE, SEVENTH_PLACE, EIGHT_PLACE,
-            NINTH_PLACE, TENTH_PLACE
-    };
-
     // else, add the points, according to voterType
     if (vote.m_voter.voterType() == Regular) { // regular voter
         if (vote.m_voter.timesOfVotes() >= m_max_regular_votes) return *this; // reached voting limit - return
         addPointsIfLegal(vote, vote.m_states[0], 1); // add point to voted state
-    } else { // voterType == Judge
+    } else if (vote.m_voter.voterType() == Judge) {
         if (vote.m_voter.timesOfVotes() > 0) return *this; // reached voting limit - return
+
         for (int i=0; i < 10; i++) {
-            addPointsIfLegal(vote, vote.m_states[i], ranking[i]);  // add points accroding to ranking
+            addPointsIfLegal(vote, vote.m_states[i], getRanking(i));  // add points accroding to ranking
         }
     }
     return *this;
@@ -213,6 +215,7 @@ ostream& operator<<(ostream& os, const MainControl& eurovision) {
     MainControl::ParticipantNode* iterator = eurovision.m_participants->next; // iterator for the participants list
 
     os << "{" << endl << MainControl::getPhaseText(eurovision.m_phase) << endl;
+
     if (eurovision.m_phase == Registration) {
         while (iterator != NULL) {
             os << iterator->participant << endl;
@@ -220,10 +223,13 @@ ostream& operator<<(ostream& os, const MainControl& eurovision) {
         }
     } else if (eurovision.m_phase == Voting) {
         while (iterator != NULL) {
-            os << iterator->participant.state() << " : " << "Regular(" << iterator->m_regular_votes << ") Judge(" << iterator->m_judge_votes << ")" << endl;
+            os << iterator->participant.state() << " : ";
+            os << "Regular(" << iterator->m_regular_votes << ") ";
+            os << "Judge(" << iterator->m_judge_votes << ")" << endl;
             iterator = iterator->next;
         }
     }
+
     os << "}" << endl;
     return os;
 }
@@ -249,7 +255,7 @@ void MainControl::addPointsIfLegal(const Vote& vote, const string& voted_state, 
     // add points to the voted state
     if (vote.m_voter.voterType() == Regular) { // regular voter
         prev_node.next->m_regular_votes += num_of_points;
-    } else { // judge voter
+    } else if (vote.m_voter.voterType() == Judge) { // judge voter
         prev_node.next->m_judge_votes += num_of_points;
     }
 
@@ -261,6 +267,16 @@ string MainControl::getPhaseText (Phase phase) {
     if (phase == Voting) return "Voting";
     //else
     return "Contest";
+}
+
+Ranking MainControl::getRanking(int place) {
+    static const Ranking ranking[NUMBER_OF_RANKINGS] = { // points table for judges points
+            FIRST_PLACE, SECOND_PLACE, THIRD_PLACE, FOURTH_PLACE,
+            FIFTH_PLACE, SIXTH_PLACE, SEVENTH_PLACE, EIGHT_PLACE,
+            NINTH_PLACE, TENTH_PLACE
+    };
+
+    return ranking[place];
 }
 // -----------------------------------------------------------
 
