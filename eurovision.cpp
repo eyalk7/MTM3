@@ -124,7 +124,9 @@ MainControl::~MainControl() {
 }
 
 void MainControl::setPhase(Phase phase) {
-    m_phase = phase;
+    if ((m_phase == Registration && phase == Contest) || (m_phase == Contest && phase == Voting)) {
+        m_phase = phase;
+    }
 }
 bool MainControl::participate(const string& state) const {
     // iterate on the participants list in the MainControl element
