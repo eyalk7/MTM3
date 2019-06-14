@@ -189,6 +189,21 @@ TEST("1.7")
   ((eurovision += p4) += p3) += p5;
   cout << eurovision << endl;
 
+
+TEST("1.7.1")
+
+  MainControl::Iterator i;
+  for (i = eurovision.begin(); i<eurovision.end(); ++i)
+     cout << *i << endl;
+
+TEST("1.7.2")
+  for (i = eurovision.begin(); !(i==eurovision.end()); ++i)
+     cout << *i << endl;
+
+TEST("1.7.3")
+//  --i; // compilation error. operator -- does not exist for i.
+
+
   eurovision.setPhase(Voting);
 /*
   There are 3 phases :
@@ -338,14 +353,37 @@ TEST("1.15")
   cout << eurovision << endl;
 
 TEST("1.16")
-  eurovision += Vote(vr5, "Cyprus"); // vr5 voted more than max times, but last two votes weren't counted
-                                     // because they weren't legal. Therefore, this vote is counted.
+  eurovision += Vote(vr5, "Cyprus"); /* Not counted. vr5 has already exceeded max allowed times for voting */
   cout << eurovision << endl;
 
 TEST("1.17")
   eurovision += Vote(vj1, "Cyprus", "UK", "Australia");
   /* example of voting of a Judge */
   cout << eurovision << endl;
+
+TEST("1.17.1")
+
+  cout << eurovision(1, Regular) << endl;
+  cout << eurovision(2, Regular) << endl;
+  cout << eurovision(3, Regular) << endl;
+  cout << eurovision(4, Regular) << endl;
+  cout << eurovision(5, Regular) << endl;
+
+TEST("1.17.2")
+
+  cout << eurovision(1, Judge) << endl;
+  cout << eurovision(2, Judge) << endl;
+  cout << eurovision(3, Judge) << endl;
+  cout << eurovision(4, Judge) << endl;
+  cout << eurovision(5, Judge) << endl;
+
+TEST("1.17.3")
+
+  cout << eurovision(1, All) << endl;
+  cout << eurovision(2, All) << endl;
+  cout << eurovision(3, All) << endl;
+  cout << eurovision(4, All) << endl;
+  cout << eurovision(5, All) << endl;
 
   return 0;
 }
