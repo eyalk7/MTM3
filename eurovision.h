@@ -30,6 +30,11 @@ typedef enum {
 } Ranking;
 
 //---------------------------------------------------
+template<class Iterator>
+        Iterator get(Iterator first, Iterator last) {
+
+        }
+//---------------------------------------------------
 
 class Participant
 {
