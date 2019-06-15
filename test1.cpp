@@ -338,7 +338,8 @@ TEST("1.15")
   cout << eurovision << endl;
 
 TEST("1.16")
-  eurovision += Vote(vr5, "Cyprus"); /* Not counted. vr5 has already exceeded max allowed times for voting */
+  eurovision += Vote(vr5, "Cyprus"); // vr5 voted more than max times, but last two votes weren't counted
+                                     // because they weren't legal. Therefore, this vote is counted.
   cout << eurovision << endl;
 
 TEST("1.17")
