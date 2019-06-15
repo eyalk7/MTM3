@@ -147,6 +147,8 @@ class MainControl
     static string getPhaseText(Phase phase);
     // internal function for getting Judge points
     static Ranking getRanking(int place);
+    // internal function to check if a Vote element contains one state to vote for
+    static bool checkOnlyOneState(const Vote& vote);
 
 public :
 // need to define here possibly c'tr and d'tr and ONLY methods that

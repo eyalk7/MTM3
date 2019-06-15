@@ -200,10 +200,11 @@ MainControl& MainControl::operator+=(const Vote& vote) {
     // else, add the points, according to voterType
     if (vote.m_voter.voterType() == Regular) { // regular voter
         if (vote.m_voter.timesOfVotes() >= m_max_regular_votes) return *this; // reached voting limit - return
+        if (!checkOnlyOneState(vote)) return *this; // the Vote struct contain more than one state to vote for
         addPointsIfLegal(vote, vote.m_states[0], 1); // add point to voted state
     } else if (vote.m_voter.voterType() == Judge) {
         if (vote.m_voter.timesOfVotes() > 0) return *this; // reached voting limit - return
-
+        ++(vote.m_voter); // increment the number of times the judge voter
         for (int i=0; i < 10; i++) {
             addPointsIfLegal(vote, vote.m_states[i], getRanking(i));  // add points accroding to ranking
         }
@@ -277,6 +278,14 @@ Ranking MainControl::getRanking(int place) {
     };
 
     return ranking[place];
+}
+
+bool MainControl::checkOnlyOneState(const Vote& vote) {
+    for (int i=1; i<10; i++) {
+        if (vote.m_states[i] != "") return false; // contains more than one state to vote for
+    }
+    // else
+    return true;
 }
 // -----------------------------------------------------------
 

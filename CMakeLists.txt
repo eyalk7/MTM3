@@ -3,4 +3,4 @@ project(untitled1)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(untitled1 test1.cpp eurovision.cpp)
+add_executable(untitled1 eurovision.cpp test1.cpp)
