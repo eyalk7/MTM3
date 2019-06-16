@@ -204,10 +204,10 @@ MainControl& MainControl::operator+=(const Vote& vote) {
         addPointsIfLegal(vote, vote.m_states[0], 1); // add point to voted state
     } else if (vote.m_voter.voterType() == Judge) {
         if (vote.m_voter.timesOfVotes() > 0) return *this; // reached voting limit - return
-        ++(vote.m_voter); // increment the number of times the judge voter
         for (int i=0; i < 10; i++) {
             addPointsIfLegal(vote, vote.m_states[i], getRanking(i));  // add points accroding to ranking
         }
+        ++(vote.m_voter); // increment the number of times the judge voter voted
     }
     return *this;
 }
