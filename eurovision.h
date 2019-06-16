@@ -198,6 +198,7 @@ public :
     MainControl& operator+=(Participant& participant);
     MainControl& operator-=(Participant& participant);
     MainControl& operator+=(const Vote& vote);
+
     string& operator()(int place, VoterType type) const;
 
 
