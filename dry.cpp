@@ -4,8 +4,8 @@ int CountPairsByCondition(Iterator first, Iterator last, Predicate& pred){
     // Iterator can use:
         // ++iterator
         // *iterator
-        // *iterator1 < *iterator2
-        // *iterator1 == *iterator2
+        // iterator1 < iterator2
+        // iterator1 == iterator2
 
     // two loop inside a loop.
     // the outside loop start each time one ahead (so that we don't count the same pair twice)
@@ -17,7 +17,9 @@ bool isSorted(vector<int> v) {
 
     // use the iterator of the vector container:
         // v.begin, v.end (we need to check that the iterator has all the needed operator
-    // create class of "function object" to pass to the function above;
+    // create class of "function object" to pass to the function above
+    // check that the first object bigger than the second
+    // each time send two sequential objects
 }
 
 2)
