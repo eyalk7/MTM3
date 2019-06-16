@@ -1,6 +1,6 @@
 1)
 template<class Iterator, class Predicate>
-int CountPairsByCondition(Iterator first, Iterator last, Predicate pred){
+int CountPairsByCondition(Iterator first, Iterator last, Predicate& pred){
     // Iterator can use:
         // ++iterator
         // *iterator
@@ -14,6 +14,10 @@ int CountPairsByCondition(Iterator first, Iterator last, Predicate pred){
 
 bool isSorted(vector<int> v) {
     // use the function above
+
+    // use the iterator of the vector container:
+        // v.begin, v.end (we need to check that the iterator has all the needed operator
+    // create class of "function object" to pass to the function above;
 }
 
 2)
