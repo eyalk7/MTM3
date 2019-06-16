@@ -31,8 +31,18 @@ typedef enum {
 
 //---------------------------------------------------
 template<class Iterator>
-        Iterator get(Iterator first, Iterator last) {
+        Iterator get(Iterator first, Iterator last, int i) {
+            // if i < 1 return last + 1
 
+            // make Iterator array
+            // for loop on the container:
+                // iterator_array[i] = container_iterator
+
+            // loop the array to get array size
+            // if array size < i -> return last + 1
+            // sort the iterator array from biggest to smallest
+
+            // return sorted_iterator_array[i - 1]
         }
 //---------------------------------------------------
 
@@ -136,6 +146,9 @@ class MainControl
         explicit ParticipantNode(Participant& source_participant) :
         participant(source_participant), next(NULL), m_regular_votes(0), m_judge_votes(0) {
         }
+
+
+
     };
     // internal functions for the ParticipantNode struct
     ParticipantNode& findPrevNode(const string& state) const;
@@ -156,6 +169,22 @@ class MainControl
     static bool checkOnlyOneState(const Vote& vote);
 
 public :
+
+    class Iterator {
+        ParticipantNode* current;
+
+        Iterator(ParticipantNode* first);
+        bool operator<(const Iterator& other) const;
+        Iterator operator++();
+        bool operator==(const Iterator& other) const;
+        const Participant& operator*() const;
+
+    };
+
+
+
+    Iterator begin() const;
+    Iterator end() const;
 // need to define here possibly c'tr and d'tr and ONLY methods that
 // are mentioned and demonstrated in the test example that has been published.
 // NO OTHER METHODS SHOULD APPEAR HERE.
@@ -169,6 +198,7 @@ public :
     MainControl& operator+=(Participant& participant);
     MainControl& operator-=(Participant& participant);
     MainControl& operator+=(const Vote& vote);
+    string& operator()(int place, VoterType type) const;
 
 
 // Also it's allowed here to define friend.

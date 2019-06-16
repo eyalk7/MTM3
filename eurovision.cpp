@@ -205,11 +205,15 @@ MainControl& MainControl::operator+=(const Vote& vote) {
     } else if (vote.m_voter.voterType() == Judge) {
         if (vote.m_voter.timesOfVotes() > 0) return *this; // reached voting limit - return
         for (int i=0; i < 10; i++) {
-            addPointsIfLegal(vote, vote.m_states[i], getRanking(i));  // add points accroding to ranking
+            addPointsIfLegal(vote, vote.m_states[i], getRanking(i));  // add points according to ranking
         }
         ++(vote.m_voter); // increment the number of times the judge voter voted
     }
     return *this;
+}
+
+string& operator()(int place, VoterType type) {
+    // string winner = get(begin(), end(), place)
 }
 
 ostream& operator<<(ostream& os, const MainControl& eurovision) {
@@ -233,6 +237,39 @@ ostream& operator<<(ostream& os, const MainControl& eurovision) {
 
     os << "}" << endl;
     return os;
+}
+
+// -------------- EUROVISION ITERATOR FUNCTIONS---------------------------
+
+bool MainControl::Iterator::operator<(const Iterator& other) const {
+    // loop on the participant list:
+    //      check if the current element is equal to this OR other:
+    //          if it is equal to this return true
+
+    // return false
+}
+
+MainControl::Iterator MainControl::Iterator::operator++() {
+    // need to check if reached the last node
+
+    // current = current->next
+    // returns *this;
+}
+
+bool MainControl::Iterator::operator==(const Iterator& other) {
+    // return this->current == other->current;
+}
+
+const Participant& MainControl::Iterator::operator*() {
+    // return this->current->participant;
+}
+
+MainControl::Iterator MainControl::begin() {
+    // DIY!!
+}
+
+MainControl::Iterator MainControl::end() {
+    // DIY!!
 }
 
 // --------------INTERNAL FUNCTIONS---------------------------
