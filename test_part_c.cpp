@@ -9,7 +9,7 @@ For questions and clarifications : Please use the forum in Moodle.
 **************************************************************************/
 
 #include <iostream>
-#include "seat.h"
+#include "../../Desktop/ex3-1819b-v1/seat.h"
 using std::cout;
 using std::endl;
 
