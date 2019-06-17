@@ -108,22 +108,29 @@ MainControl::MainControl(int max_song_length,
                          m_max_participants(max_participants),
                          m_max_regular_votes(max_regular_votes),
                          m_phase(Registration) {
-    // insert dummy node in start of participants list
-    Participant* dummy = new Participant("","",0,"");
-    ParticipantNode* dummy_node = new ParticipantNode(*dummy);
-    m_participants = dummy_node;
+    // insert dummy node in start and at the end of participants list
+    Participant* first_dummy = new Participant("","",0,"");
+    Participant* last_dummy = new Participant("","",0,"");
+    ParticipantNode* last_node = new ParticipantNode(*last_dummy, nullptr);
+    ParticipantNode* first_node = new ParticipantNode(*first_dummy, last_node);
+
+    m_participants_first = first_node;
+    m_participants_last = last_node;
 }
 
 MainControl::~MainControl() {
     // iterate on the participants list & delete all nodes
-    ParticipantNode* iterator = m_participants->next;
-    while (iterator != NULL) {
+    ParticipantNode* iterator = m_participants_first->next;
+    while (iterator != m_participants_last) {
         ParticipantNode* to_delete = iterator;
         iterator = iterator->next;
         delete to_delete;
     }
-    delete &(m_participants->participant); // delete the dummy participant
-    delete m_participants; // delete the dummy node
+
+    delete &(m_participants_last->participant); // delete the last dummy participant
+    delete &(m_participants_first->participant); // delete the first dummy participant
+    delete m_participants_last;       // delete the last dummy node
+    delete m_participants_first; // delete the first dummy node
 }
 
 void MainControl::setPhase(Phase phase) {
@@ -137,7 +144,7 @@ bool MainControl::participate(const string& state) const {
     ParticipantNode* candidate_node = prev_node.next;
 
     // if the state is in the list return true
-    if (candidate_node != NULL && (candidate_node->participant).state() == state) {
+    if (candidate_node != m_participants_last && (candidate_node->participant).state() == state) {
         return true;
     }
     // else return false
@@ -164,15 +171,11 @@ MainControl& MainControl::operator+=(Participant& participant) {
     if (participate(participant.state())) return *this;
     if (!legalParticipant(participant)) return *this;
 
-    // else, register the participant
-    ParticipantNode* new_node = new ParticipantNode(participant);
-
     // add the participant in alphabetic order and return
     ParticipantNode& prev_node = findPrevNode(participant.state());
-    if (prev_node.next != NULL) { // not end of list
-        new_node->next = prev_node.next;
-    }
-    // else, reached end of list
+
+    ParticipantNode* new_node = new ParticipantNode(participant, prev_node.next);
+
     prev_node.next = new_node;
 
     participant.updateRegistered(true); // change is_registered to true
@@ -217,16 +220,17 @@ string& operator()(int place, VoterType type) {
 
 ostream& operator<<(ostream& os, const MainControl& eurovision) {
     MainControl::ParticipantNode* iterator = eurovision.m_participants->next; // iterator for the participants list
+    MainControl:: ParticipantNode* end = eurovision.m_participants_last;
 
     os << "{" << endl << MainControl::getPhaseText(eurovision.m_phase) << endl;
 
     if (eurovision.m_phase == Registration) {
-        while (iterator != NULL) {
+        while (iterator != end) {
             os << iterator->participant << endl;
             iterator = iterator->next;
         }
     } else if (eurovision.m_phase == Voting) {
-        while (iterator != NULL) {
+        while (iterator != end) {
             os << iterator->participant.state() << " : ";
             os << "Regular(" << iterator->m_regular_votes << ") ";
             os << "Judge(" << iterator->m_judge_votes << ")" << endl;
@@ -276,8 +280,8 @@ MainControl::Iterator MainControl::end() {
 MainControl::ParticipantNode& MainControl::findPrevNode(const string& state) const {
     // iterate on the participants list,
     // return the last participant that smaller alphabeticly than the given state
-    ParticipantNode* iterator = m_participants;
-    while (iterator->next != NULL && iterator->next->participant.state() < state){
+    ParticipantNode* iterator = m_participants_first;
+    while (iterator->next != m_participants_last && iterator->next->participant.state() < state) {
         iterator = iterator->next;
     }
     return *iterator;

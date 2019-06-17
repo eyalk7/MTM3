@@ -30,20 +30,29 @@ typedef enum {
 } Ranking;
 
 //---------------------------------------------------
-template<class Iterator>
-        Iterator get(Iterator first, Iterator last, int i) {
-            // if i < 1 return last + 1
+template<typename Iterator>
+Iterator get(Iterator first, Iterator last, int i) {
+    if (i < 1) return last; // i is too small
 
-            // make Iterator array
-            // for loop on the container:
-                // iterator_array[i] = container_iterator
+    Iterator* iterator_array = &first;
+    int index = 0;
+    for (Iterator iter = first; iter < last; ++iter) {
+        iterator_array[index] = iter;
+        index++;
+    }
 
-            // loop the array to get array size
-            // if array size < i -> return last + 1
-            // sort the iterator array from biggest to smallest
+    if (index < i) return last; // i is too big
 
-            // return sorted_iterator_array[i - 1]
-        }
+    // sort the iterator array from biggest to smallest
+
+    /////////////////////////////////////////////   ????
+    std::sort(iterator_array, iterator_array + index);
+    std::reverse(iterator_array, iterator_array + index)
+    /////////////////////////////////////////////   ????
+
+
+    return iterator_array[i - 1];
+}
 //---------------------------------------------------
 
 class Participant
@@ -144,8 +153,8 @@ class MainControl
         int m_regular_votes;
         int m_judge_votes;
 
-        explicit ParticipantNode(Participant& source_participant) :
-        participant(source_participant), next(NULL), m_regular_votes(0), m_judge_votes(0) {
+        explicit ParticipantNode(Participant& participant, ParticipantNode* next_ptr) :
+                participant(participant), next(next_ptr), m_regular_votes(0), m_judge_votes(0) {
         }
 
     };
@@ -153,7 +162,8 @@ class MainControl
     ParticipantNode& findPrevNode(const string& state) const;
     void addPointsIfLegal(const Vote& vote, const string& voted_state, int num_of_points) const;
 
-    ParticipantNode *m_participants; //
+    ParticipantNode *m_participants_first;
+    ParticipantNode* m_participants_last;
     int m_num_of_participants;
     int m_max_song_length;
     int m_max_participants;
@@ -169,10 +179,10 @@ class MainControl
 
 public :
 
-    class Iterator{
+    class Iterator {
         ParticipantNode* current;
 
-        Iterator(ParticipantNode* first);
+        Iterator(); // (ParticipantNode* first);
         bool operator<(const Iterator& other) const;
         Iterator operator++();
         bool operator==(const Iterator& other) const;
