@@ -74,7 +74,8 @@ public :
     void update(const string& name, int length, const string& singer);
     void updateRegistered(bool registered); // public, but the assumption is only specific MainControl functions use
 
-// NO friend is allowed here. :(
+
+    // NO friend is allowed here. :(
 
 };
 
@@ -147,8 +148,6 @@ class MainControl
         participant(source_participant), next(NULL), m_regular_votes(0), m_judge_votes(0) {
         }
 
-
-
     };
     // internal functions for the ParticipantNode struct
     ParticipantNode& findPrevNode(const string& state) const;
@@ -170,7 +169,7 @@ class MainControl
 
 public :
 
-    class Iterator {
+    class Iterator{
         ParticipantNode* current;
 
         Iterator(ParticipantNode* first);
@@ -180,8 +179,6 @@ public :
         const Participant& operator*() const;
 
     };
-
-
 
     Iterator begin() const;
     Iterator end() const;

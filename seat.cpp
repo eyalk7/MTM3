@@ -30,10 +30,10 @@ GreenRoomSeat::GreenRoomSeat(int line, int chair) : Seat(line, chair, 0) {
 
 }
 
-int GreenRoomSeat::price() {
+int GreenRoomSeat::price() override {
     // throw NoPrice()
 }
-string GreenRoomSeat::location() {
+string GreenRoomSeat::location() override {
     // print Green Room-> seat.location()
 }
 
@@ -47,7 +47,7 @@ MainHallSeat::~MainHallSeat() {
 
 }
 
-int MainHallSeat::price() {
+int MainHallSeat::price() override {
     // seat.price() + 100
 }
 
@@ -59,7 +59,7 @@ SpecialSeat::~SpecialSeat() {
 
 }
 
-int SpecialSeat::price() {
+int SpecialSeat::price() override {
     // mainHall.price() + 300
 }
 
@@ -67,10 +67,10 @@ int SpecialSeat::price() {
 GoldenCircleSeat::GoldenCircleSeat(int line, int chair, int price) : SpecialSeat(line, chair, price) {
 
 }
-string GoldenCircleSeat::location()
+string GoldenCircleSeat::location() override {
     // Golden Circle -> seat.location()
 }
-int GoldenCircleSeat::price() {
+int GoldenCircleSeat::price() override {
     // specialSeat.price() + 1000
 }
 
@@ -79,10 +79,10 @@ int GoldenCircleSeat::price() {
 DisablePodiumSeat::DisablePodiumSeat(int line, int chair, int price = 0) : SpecialSeat(line, chair, price) {
 
 }
-string DisablePodiumSeat::location() {
+string DisablePodiumSeat::location() override {
     // Disabled Podium -> seat.location()
 }
-int DisablePodiumSeat::price() {
+int DisablePodiumSeat::price() override {
     // price ===== 200
 }
 
@@ -94,7 +94,7 @@ RegularSeat::~RegularSeat() {
 
 }
 
-string RegularSeat::location() {
+string RegularSeat::location() override {
     // print area: seat.location()
 }
 
@@ -103,10 +103,10 @@ string RegularSeat::location() {
 FrontRegularSeat::FrontRegularSeat(char area, int line, int chair, int price) : RegularSeat(area, line, chair, price) {}
 
 
-int FrontRegularSeat::price() {
+int FrontRegularSeat::price() override {
     // mainHall.price() + 500
 }
-string FrontRegularSeat::location() {
+string FrontRegularSeat::location() override {
     // print Front-> regularSeat.location()
 }
 
@@ -116,10 +116,10 @@ MiddleRegularSeat::MiddleRegularSeat(char area, int line, int chair, int price) 
 
 }
 
-int MiddleRegularSeat::price() {
+int MiddleRegularSeat::price() override {
     // mainHall.price() + 250
 }
-string MiddleRegularSeat::location() {
+string MiddleRegularSeat::location() override {
     // print Middle-> regularSeat.location()
 }
 
@@ -128,7 +128,7 @@ RearRegularSeat::RearRegularSeat(char area, int line, int chair, int price) : Re
 
 }
 
-string RearRegularSeat::location() {
+string RearRegularSeat::location() override {
     // print Rear-> regularSeat.location()
 }
 // ---------------------------------------------

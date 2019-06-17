@@ -42,10 +42,10 @@ class MainHallSeat : public Seat
 {
 protected:
     MainHallSeat(int line, int chair, int price);
-    virtual ~MainHallSeat();
+    ~MainHallSeat();
 
 public:
-    virtual int price() const;
+    int price() const;
 };
 
 // ---------------------------------------------
@@ -54,10 +54,10 @@ class SpecialSeat : public MainHallSeat
 
 protected:
     SpecialSeat(int line , int chair, int price)
-    virtual ~SpecialSeat();
+    ~SpecialSeat();
 
 public:
-    virtual int price() const;
+    int price() const;
 
 };
 
@@ -87,10 +87,10 @@ class RegularSeat : public MainHallSeat
 
 protected:
     RegularSeat(char area, int line, int chair, int price);
-    virtual ~RegularSeat();
+    ~RegularSeat();
 
 public:
-    virtual string location() const;
+    string location() const;
 };
 
 // ---------------------------------------------
