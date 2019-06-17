@@ -207,7 +207,6 @@ MainControl& MainControl::operator+=(const Vote& vote) {
         for (int i=0; i < 10; i++) {
             addPointsIfLegal(vote, vote.m_states[i], getRanking(i));  // add points according to ranking
         }
-        ++(vote.m_voter); // increment the number of times the judge voter voted
     }
     return *this;
 }

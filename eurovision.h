@@ -169,7 +169,6 @@ class MainControl
     static bool checkOnlyOneState(const Vote& vote);
 
 public :
-
     class Iterator {
         ParticipantNode* current;
 
