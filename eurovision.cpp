@@ -219,7 +219,7 @@ string& operator()(int place, VoterType type) {
 }
 
 ostream& operator<<(ostream& os, const MainControl& eurovision) {
-    MainControl::ParticipantNode* iterator = eurovision.m_participants->next; // iterator for the participants list
+    MainControl::ParticipantNode* iterator = eurovision.m_participants_first->next; // iterator for the participants list
     MainControl:: ParticipantNode* end = eurovision.m_participants_last;
 
     os << "{" << endl << MainControl::getPhaseText(eurovision.m_phase) << endl;
@@ -273,13 +273,14 @@ MainControl::Iterator MainControl::begin() {
 
 MainControl::Iterator MainControl::end() {
     // DIY!!
+    // return dummy that's at the end
 }
 
 // --------------INTERNAL FUNCTIONS---------------------------
 
 MainControl::ParticipantNode& MainControl::findPrevNode(const string& state) const {
     // iterate on the participants list,
-    // return the last participant that smaller alphabeticly than the given state
+    // return the last participant that smaller alphabetically than the given state
     ParticipantNode* iterator = m_participants_first;
     while (iterator->next != m_participants_last && iterator->next->participant.state() < state) {
         iterator = iterator->next;

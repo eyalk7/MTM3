@@ -182,7 +182,8 @@ public :
     class Iterator {
         ParticipantNode* current;
 
-        Iterator(); // (ParticipantNode* first);
+        public:
+        //Iterator(); // (ParticipantNode* first);
         bool operator<(const Iterator& other) const;
         Iterator operator++();
         bool operator==(const Iterator& other) const;
