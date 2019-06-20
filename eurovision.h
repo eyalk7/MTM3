@@ -2,12 +2,15 @@
 #define EUROVISION_H_
 
 #include <iostream>
+#include <vector>
 
 // it's allowed to define here any using statements, according to needs.
 // do NOT define here : using namespace std;
 using std::string;
 using std::ostream;
 using std::endl;
+
+using std::vector;
 
 //---------------------------------------------------
 
@@ -30,28 +33,28 @@ typedef enum {
 } Ranking;
 
 //---------------------------------------------------
-template<typename Iterator>
-Iterator get(Iterator first, Iterator last, int i) {
+template<typename Iterator, class Predicate>
+Iterator get(const Iterator& first,const Iterator& last, int i, const Predicate& condition) {
+    // Assumption: The given condition is a function object that receives two
+    // Iterator objects of the given container and returns a bool value
+    // which is true if the object the first Iterator points to is bigger
+    // than the object the second Iterator is pointing to
+
     if (i < 1) return last; // i is too small
 
-    Iterator* iterator_array = &first;
-    int index = 0;
+    // Create a list of the Container's iterators
+    vector<Iterator> iter_sequence;
     for (Iterator iter = first; iter < last; ++iter) {
-        iterator_array[index] = iter;
-        index++;
+        iter_sequence.insert(iter_sequence.begin(), iter);
     }
 
-    if (index < i) return last; // i is too big
+    if (iter_sequence.size() < i) return last; // i is too big
 
     // sort the iterator array from biggest to smallest
+    iter_sequence.sort(condition);
+    iter_sequence.reverse();
 
-    /////////////////////////////////////////////   ????
-    std::sort(iterator_array, iterator_array + index);
-    std::reverse(iterator_array, iterator_array + index)
-    /////////////////////////////////////////////   ????
-
-
-    return iterator_array[i - 1];
+    return iter_sequence[i - 1];
 }
 //---------------------------------------------------
 
@@ -142,7 +145,6 @@ struct Vote
 
 // -----------------------------------------------------------
 
-
 class MainControl
 {
 // relevant private members can be defined here, if necessary.
@@ -181,14 +183,14 @@ public :
 
     class Iterator {
         ParticipantNode* current;
+        friend MainControl;
 
         public:
-        //Iterator(); // (ParticipantNode* first);
+        Iterator();
         bool operator<(const Iterator& other) const;
         Iterator operator++();
         bool operator==(const Iterator& other) const;
         const Participant& operator*() const;
-
     };
 
     Iterator begin() const;

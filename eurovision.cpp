@@ -143,24 +143,18 @@ bool MainControl::participate(const string& state) const {
     ParticipantNode& prev_node = findPrevNode(state);
     ParticipantNode* candidate_node = prev_node.next;
 
-    // if the state is in the list return true
-    if (candidate_node != m_participants_last && (candidate_node->participant).state() == state) {
-        return true;
-    }
-    // else return false
-    return false;
+    // if the state is in the list return true, else return false
+    return (candidate_node != m_participants_last && candidate_node->participant.state() == state);
 }
 bool MainControl::legalParticipant(const Participant& participant) const {
-    if (participant.state() == "" || participant.singer() == "" || participant.song() == "") {
+    // check that participant's state, singer and song names are valid
+    if (participant.state().empty() || participant.singer().empty() || participant.song().empty()) {
         return false;
     }
 
+    // return true if the song's time length is valid, else false
     int time_length = participant.timeLength();
-    if (time_length < 1 || time_length > m_max_song_length) {
-        return false;
-    }
-    //else
-    return true;
+    return (1 <= time_length <= m_max_song_length);
 }
 
 MainControl& MainControl::operator+=(Participant& participant) {
@@ -203,6 +197,7 @@ MainControl& MainControl::operator+=(const Vote& vote) {
     // else, add the points, according to voterType
     if (vote.m_voter.voterType() == Regular) { // regular voter
         if (vote.m_voter.timesOfVotes() >= m_max_regular_votes) return *this; // reached voting limit - return
+        if (!checkOnlyOneState(vote)) return *this; // the Vote struct contain more than one state to vote for
         addPointsIfLegal(vote, vote.m_states[0], 1); // add point to voted state
     } else if (vote.m_voter.voterType() == Judge) {
         if (vote.m_voter.timesOfVotes() > 0) return *this; // reached voting limit - return
@@ -213,8 +208,11 @@ MainControl& MainControl::operator+=(const Vote& vote) {
     return *this;
 }
 
-string& operator()(int place, VoterType type) {
+string& MainControl::operator()(int place, VoterType type) const {
     // string winner = get(begin(), end(), place)
+    string* str = new string(" ");
+
+    return *str;
 }
 
 ostream& operator<<(ostream& os, const MainControl& eurovision) {
@@ -243,40 +241,48 @@ ostream& operator<<(ostream& os, const MainControl& eurovision) {
 
 // -------------- EUROVISION ITERATOR FUNCTIONS---------------------------
 
+MainControl::Iterator::Iterator() : current(nullptr) {}
+
 bool MainControl::Iterator::operator<(const Iterator& other) const {
     // loop on the participant list:
     //      check if the current element is equal to this OR other:
     //          if it is equal to this return true
 
-    // Participant& p1 = current.participant;
-    // Participant& p2 = other.current.participant;
-    // return p1.state() < p2.state();
+    Participant& p1 = current->participant;
+    Participant& p2 = other.current->participant;
+    return p1.state() < p2.state();
 
     // return false
 }
 
 MainControl::Iterator MainControl::Iterator::operator++() {
-    // need to check if reached the last node
-
-    // current = current->next
-    // returns *this;
+    // check if reached the last node
+    if (current->next != nullptr) {
+        current = current->next;
+    }
+    return *this;
 }
 
-bool MainControl::Iterator::operator==(const Iterator& other) {
-    // return this->current == other->current;
+bool MainControl::Iterator::operator==(const Iterator& other) const {
+    return current == other.current;
 }
 
-const Participant& MainControl::Iterator::operator*() {
-    // return this->current->participant;
+const Participant& MainControl::Iterator::operator*() const {
+    // what if this is the end dummy ??
+
+    return (this->current->participant);
 }
 
-MainControl::Iterator MainControl::begin() {
-    // DIY!!
+MainControl::Iterator MainControl::begin() const {
+    MainControl::Iterator iter;
+    iter.current = m_participants_first->next;
+    return iter;
 }
 
-MainControl::Iterator MainControl::end() {
-    // DIY!!
-    // return dummy that's at the end
+MainControl::Iterator MainControl::end() const {
+    MainControl::Iterator iter;
+    iter.current = m_participants_last;
+    return iter;
 }
 
 // --------------INTERNAL FUNCTIONS---------------------------
@@ -324,12 +330,12 @@ Ranking MainControl::getRanking(int place) {
     return ranking[place];
 }
 
-//bool MainControl::checkOnlyOneState(const Vote& vote) {
-//    for (int i=1; i<10; i++) {
-//        if (vote.m_states[i] != "") return false; // contains more than one state to vote for
-//    }
-//    // else
-//    return true;
-//}
+bool MainControl::checkOnlyOneState(const Vote& vote) {
+    for (int i=1; i<10; i++) {
+        if (vote.m_states[i] != "") return false; // contains more than one state to vote for
+    }
+    // else
+    return true;
+}
 // -----------------------------------------------------------
 
