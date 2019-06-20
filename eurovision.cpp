@@ -154,7 +154,7 @@ bool MainControl::legalParticipant(const Participant& participant) const {
 
     // return true if the song's time length is valid, else false
     int time_length = participant.timeLength();
-    return (1 <= time_length <= m_max_song_length);
+    return (1 <= time_length && time_length <= m_max_song_length);
 }
 
 MainControl& MainControl::operator+=(Participant& participant) {
@@ -244,15 +244,14 @@ ostream& operator<<(ostream& os, const MainControl& eurovision) {
 MainControl::Iterator::Iterator() : current(nullptr) {}
 
 bool MainControl::Iterator::operator<(const Iterator& other) const {
-    // loop on the participant list:
-    //      check if the current element is equal to this OR other:
-    //          if it is equal to this return true
+    // CHECK THAT ITERATORS ARE BOTH ON THE LIST?
+
+    if (current-> next == nullptr) return false;
+    if (other.current->next == nullptr) return true;
 
     Participant& p1 = current->participant;
     Participant& p2 = other.current->participant;
     return p1.state() < p2.state();
-
-    // return false
 }
 
 MainControl::Iterator MainControl::Iterator::operator++() {
@@ -269,6 +268,8 @@ bool MainControl::Iterator::operator==(const Iterator& other) const {
 
 const Participant& MainControl::Iterator::operator*() const {
     // what if this is the end dummy ??
+    assert(current->next != nullptr);
+
 
     return (this->current->participant);
 }

@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <assert.h>
 
 // it's allowed to define here any using statements, according to needs.
 // do NOT define here : using namespace std;
