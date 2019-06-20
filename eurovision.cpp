@@ -203,7 +203,6 @@ MainControl& MainControl::operator+=(const Vote& vote) {
     // else, add the points, according to voterType
     if (vote.m_voter.voterType() == Regular) { // regular voter
         if (vote.m_voter.timesOfVotes() >= m_max_regular_votes) return *this; // reached voting limit - return
-        if (!checkOnlyOneState(vote)) return *this; // the Vote struct contain more than one state to vote for
         addPointsIfLegal(vote, vote.m_states[0], 1); // add point to voted state
     } else if (vote.m_voter.voterType() == Judge) {
         if (vote.m_voter.timesOfVotes() > 0) return *this; // reached voting limit - return
@@ -248,6 +247,10 @@ bool MainControl::Iterator::operator<(const Iterator& other) const {
     // loop on the participant list:
     //      check if the current element is equal to this OR other:
     //          if it is equal to this return true
+
+    // Participant& p1 = current.participant;
+    // Participant& p2 = other.current.participant;
+    // return p1.state() < p2.state();
 
     // return false
 }
@@ -321,12 +324,12 @@ Ranking MainControl::getRanking(int place) {
     return ranking[place];
 }
 
-bool MainControl::checkOnlyOneState(const Vote& vote) {
-    for (int i=1; i<10; i++) {
-        if (vote.m_states[i] != "") return false; // contains more than one state to vote for
-    }
-    // else
-    return true;
-}
+//bool MainControl::checkOnlyOneState(const Vote& vote) {
+//    for (int i=1; i<10; i++) {
+//        if (vote.m_states[i] != "") return false; // contains more than one state to vote for
+//    }
+//    // else
+//    return true;
+//}
 // -----------------------------------------------------------
 
