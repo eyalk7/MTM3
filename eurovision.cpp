@@ -209,9 +209,11 @@ MainControl& MainControl::operator+=(const Vote& vote) {
 }
 
 string& MainControl::operator()(int place, VoterType type) const {
-    // string winner = get(begin(), end(), place)
-    string* str = new string(" ");
+    string* str = new string("");
 
+    // VoteCompare<voteType> vote_cmp;
+    // Iterator winner = get(begin(), end(), place, vote_cmp);
+    
     return *str;
 }
 

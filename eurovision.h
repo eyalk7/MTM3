@@ -53,7 +53,7 @@ Iterator get(const Iterator& first,const Iterator& last, int i, const Predicate&
 
     // sort the iterator array from biggest to smallest
     iter_sequence.sort(condition);
-    iter_sequence.reverse();
+    //iter_sequence.reverse();
 
     return iter_sequence[i - 1];
 }
@@ -199,6 +199,47 @@ public :
 // need to define here possibly c'tr and d'tr and ONLY methods that
 // are mentioned and demonstrated in the test example that has been published.
 // NO OTHER METHODS SHOULD APPEAR HERE.
+private:
+    template<VoterType VoteT>
+    class VoteCompare {
+        bool operator()(MainControl::Iterator iter1, MainControl::Iterator iter2) {
+            ParticipantNode* node1 = iter1.current;
+            int regular_votes_1 = node1->m_regular_votes;
+            int judge_votes_1 = node1->m_judge_votes;
+
+            ParticipantNode* node2 = iter2.current;
+            int regular_votes_2 = node1->m_regular_votes;
+            int judge_votes_2 = node1->m_judge_votes;
+
+            int votes_1 = 0, votes_2 = 0;
+            switch (VoteT) {
+                case Regular:
+                    votes_1 = regular_votes_1;
+                    votes_2 = regular_votes_2;
+                    break;
+                case Judge:
+                    votes_1 = judge_votes_1;
+                    votes_2 = judge_votes_2;
+                    break;
+                default: //case All:
+                    votes_1 = regular_votes_1 + judge_votes_1;
+                    votes_2 = regular_votes_2 + judge_votes_2;
+                    break;
+            }
+
+
+            if (votes_1 == votes_2) {
+                // if no. of points is equal, the state with the bigger name
+                // goes first (true = Participant 1 has bigger state)
+                return node1->participant.state() > node2->participant.state();
+            }
+
+            // true = Participant 1 has more votes than Participant 2
+            return votes_1 > votes_2;
+        }
+    };
+
+public:
 
     explicit MainControl(int max_song_length = 180, int max_participants = 26, int max_regular_votes = 5);
     ~MainControl();
