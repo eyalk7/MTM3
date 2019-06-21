@@ -2,72 +2,75 @@
 #include <string>
 using std::string;
 using std::exception;
+using std::to_string;
 
 // ---------------------------------------------
 class NoPrice : public exception
 {
+private:
+    string m_message;
+
 public:
-    const char* what() const;
+    explicit NoPrice(const string& message);
+    virtual const char* what() const throw();
 };
 
 // ---------------------------------------------
 class Seat
 {
-    int row;
-    int seat;
-    int price;
+    int m_line;
+    int m_chair;
 
 protected:
-    Seat(int line, int chair, int base_price);
-    virtual ~Seat();
+    int m_price;
 
 public:
-    virtual int price() const;
+    Seat(int line, int chair, int base_price);
+    virtual ~Seat() = default;
+
+    virtual int price() const = 0;
     virtual string location() const;
 };
 
 // ---------------------------------------------
 class GreenRoomSeat : public Seat
 {
-
 public:
     GreenRoomSeat(int line, int chair);
 
-    int price() const;
-    string  location() const;
+    int price() const override;
+    string  location() const override;
 };
 
 // ---------------------------------------------
 class MainHallSeat : public Seat
 {
-protected:
-    MainHallSeat(int line, int chair, int price);
-    ~MainHallSeat();
-
 public:
-    int price() const;
+    MainHallSeat(int line, int chair, int price);
+
+    int price() const override;
+    string location() const = 0;
 };
 
 // ---------------------------------------------
 class SpecialSeat : public MainHallSeat
 {
 
-protected:
-    SpecialSeat(int line , int chair, int price)
-    ~SpecialSeat();
-
 public:
-    int price() const;
+    SpecialSeat(int line , int chair, int price);
 
+    int price() const override;
+    string location() const = 0;
 };
 
 // ---------------------------------------------
 class GoldenCircleSeat : public SpecialSeat
 {
 public:
-    GoldenCircleSeat(int line, int chair, int price)
-    string location() const;
-    int price() const;
+    GoldenCircleSeat(int line, int chair, int price);
+
+    string location() const override;
+    int price() const override;
 };
 
 // ---------------------------------------------
@@ -75,22 +78,22 @@ class DisablePodiumSeat : public SpecialSeat
 {
 
 public:
-    DisablePodiumSeat(int line, int chair, int price = 0)
-    string location() const;
-    int price() const;
+    DisablePodiumSeat(int line, int chair, int price = 0);
+
+    string location() const override;
+    int price() const override;
 };
 
 // ---------------------------------------------
 class RegularSeat : public MainHallSeat
 {
-    char area;
-
-protected:
-    RegularSeat(char area, int line, int chair, int price);
-    ~RegularSeat();
+    char m_area;
 
 public:
-    string location() const;
+    RegularSeat(char area, int line, int chair, int price);
+
+    string location() const override;
+    int price() const = 0;
 };
 
 // ---------------------------------------------
@@ -98,10 +101,10 @@ class FrontRegularSeat : public RegularSeat
 {
 
 public:
-    FrontRegularSeat(char area, int line, int chair, int price)
+    FrontRegularSeat(char area, int line, int chair, int price);
 
-    int price() const;
-    string location() const;
+    int price() const override;
+    string location() const override;
 };
 
 // ---------------------------------------------
@@ -109,10 +112,10 @@ class MiddleRegularSeat : public RegularSeat
 {
 
 public:
-    MiddleRegularSeat(char area, int line, int chair, int price)
+    MiddleRegularSeat(char area, int line, int chair, int price);
 
-    int price() const;
-    string location() const;
+    int price() const override;
+    string location() const override;
 };
 
 // ---------------------------------------------
@@ -120,10 +123,10 @@ class RearRegularSeat : public RegularSeat
 {
 
 public:
-    RearRegularSeat(char area, int line, int chair, int price)
+    RearRegularSeat(char area, int line, int chair, int price);
 
-    string location() const;
-    // no price() needed, mainhall.price is called
+    string location() const override;
+    int price() const override;
 };
 
 // ---------------------------------------------

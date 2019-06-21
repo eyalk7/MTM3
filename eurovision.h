@@ -199,7 +199,7 @@ public :
 // need to define here possibly c'tr and d'tr and ONLY methods that
 // are mentioned and demonstrated in the test example that has been published.
 // NO OTHER METHODS SHOULD APPEAR HERE.
-private:
+
     template<VoterType VoteT>
     class VoteCompare {
         bool operator()(MainControl::Iterator iter1, MainControl::Iterator iter2) {
@@ -239,8 +239,6 @@ private:
         }
     };
 
-public:
-
     explicit MainControl(int max_song_length = 180, int max_participants = 26, int max_regular_votes = 5);
     ~MainControl();
     void setPhase(Phase phase);
@@ -253,10 +251,8 @@ public:
 
     string& operator()(int place, VoterType type) const;
 
-
 // Also it's allowed here to define friend.
     friend ostream& operator<<(ostream& os, const MainControl& eurovision);
-
 };
 
 ostream& operator<<(ostream& os, const MainControl& eurovision);
