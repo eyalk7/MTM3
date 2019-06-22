@@ -7,8 +7,9 @@ int CountPairsByCondition(cosnt Iterator& first, const Iterator& last, const Pre
     int count=0;
 
     for (Iterator i=first; i<last; ++i){
-        for (Iterator j=i; j<last; ++j) {
-            ++j;
+        Iterator j=i;
+        j++;
+        for ( ; j<last; ++j) {
             if (pred(i,j) && pred(j,i)) { // validate that the order between the elements does not matter
                 count++;
             }
