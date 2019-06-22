@@ -1,11 +1,13 @@
+#include <vector>
+
 1)
 template<class Iterator, class Predicate>
 int CountPairsByCondition(Iterator first, Iterator last, Predicate& pred){
     int count=0;
 
-    for (Iterator i=first; i<last; i++){
-        for (Iterator j=i; j<last; j++) {
-            j++;
+    for (Iterator i=first; i<last; ++i){
+        for (Iterator j=i; j<last; ++j) {
+            ++j;
             if (pred(i,j) && pred(j,i)) {
                 count++;
             }
@@ -15,17 +17,31 @@ int CountPairsByCondition(Iterator first, Iterator last, Predicate& pred){
 }
 
 bool isSorted(vector<int> v) {
-    // use the function above
+    using std::vector<int>::iterator;
+    std::vector<int>::iterator;
+    class BiggerThan {
+        int bar;
 
-    // use the iterator of the vector container:
-        // v.begin, v.end (we need to check that the iterator has all the needed operator
-    // create class of "function object" to pass to the function above
-    //
-    bool operator()(iterator a, iterator b){
-        return (a.index() < b.index() && *a > *b);
+    public:
+        BiggerThan(const int c_bar) : bar(c_bar) {
+        }
+        bool operator()(iterator a, iterator b) {
+            return (*a > bar && *b > bar && *a != *b);
+        }
+    };
+
+    int current_bar = v.front() - 1;
+
+    for (iterator i=v.begin(); i<v.end()-1; ++i) {
+        if ( CountPairsByCondition<iterator, BiggerThan>(i,i+2,BiggerThan(current_bar)) < 1) {
+            return false;
+        }
+
+        // else
+        current_bar = *i;
     }
 
-    // checks that returns 0;
+    return true;
 }
 
 2)
