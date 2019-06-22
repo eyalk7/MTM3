@@ -1,19 +1,17 @@
 1)
 template<class Iterator, class Predicate>
 int CountPairsByCondition(Iterator first, Iterator last, Predicate& pred){
-    // Iterator can use:
-        // ++iterator
-        // *iterator
-        // iterator1 < iterator2
-        // iterator1 == iterator2
+    int count=0;
 
-        pred()
-
-    // two loop inside a loop.
-    // the outside loop start each time one ahead (so that we don't count the same pair twice)
-    // the inside loop starts each time one ahead of the first loop (so that we don't count one object twice as a pair)
-
-
+    for (Iterator i=first; i<last; i++){
+        for (Iterator j=i; j<last; j++) {
+            j++;
+            if (pred(i,j) && pred(j,i)) {
+                count++;
+            }
+        }
+    }
+    return count;
 }
 
 bool isSorted(vector<int> v) {
