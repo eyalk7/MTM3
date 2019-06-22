@@ -1,8 +1,9 @@
-#include <vector>
-
 1)
+#include <vector>
+using std::vector;
+
 template<class Iterator, class Predicate>
-int CountPairsByCondition(Iterator first, Iterator last, Predicate& pred){
+int CountPairsByCondition(Iterator first, Iterator last, const Predicate& pred){
     int count=0;
 
     for (Iterator i=first; i<last; ++i){
@@ -17,23 +18,23 @@ int CountPairsByCondition(Iterator first, Iterator last, Predicate& pred){
 }
 
 bool isSorted(vector<int> v) {
-    using std::vector<int>::iterator;
-    std::vector<int>::iterator;
+    typedef std::vector<int>::iterator v_iterator;
+
     class BiggerThan {
         int bar;
 
     public:
         BiggerThan(const int c_bar) : bar(c_bar) {
         }
-        bool operator()(iterator a, iterator b) {
+        bool operator()(const v_iterator a, const v_iterator b) const {
             return (*a > bar && *b > bar && *a != *b);
         }
     };
 
     int current_bar = v.front() - 1;
 
-    for (iterator i=v.begin(); i<v.end()-1; ++i) {
-        if ( CountPairsByCondition<iterator, BiggerThan>(i,i+2,BiggerThan(current_bar)) < 1) {
+    for (v_iterator i=v.begin(); i<v.end()-1; ++i) {
+        if ( CountPairsByCondition<v_iterator, BiggerThan>(i,i+2,BiggerThan(current_bar)) < 1) {
             return false;
         }
 
@@ -46,19 +47,26 @@ bool isSorted(vector<int> v) {
 
 2)
 a.
-    Base::baseMethod
-    Base::method (because not a virtual function)
+    the program calls baseMethod function from a Base pointer, so it search it in Base's public.
+    Base::baseMethod calls method function, which exist in Base (and not virtual), so it calls it.
+    Base::method prints:
     "from Base"
-    A::~A (because dtor is virtual, so it goes first to the derived dtor)
-    A::method
+    the we delete base so the d'tor is called. first A::~A (because Base dtor is virtual).
+    A::~A calls method from the class so it goes to A::method, and prints:
     "from A"
-    Base::~Base (and after the derived dtor, goes to the base dtor)
-    Base::method
+    finally, it goes to Base d'tor - Base::~Base which calls method function from inside the class.
+    so it goes to Base::method, which prints:
     "from Base"
-b. make method virtual (?)
-c. call from the ctor of A to beseMethod, and than call method
-
-A() {
-    baseMethod();
-    method();
-}
+b.  make Base's method function virtual. that will make the program to check the object real type in run time,
+    and call the relevant function to that type. because base points to an A object, than it will call
+    A::method instead of Base::method. A::method will print "from A" in the first line, instead of "from Base".
+c.  call from the c'tor of A to beseMethod, and than call method
+        A() {
+            baseMethod();
+            method();
+        }
+        the c'tor of A will be called when we call new A(). than baseMethod will print:
+        "from Base" (like we explained in a.)
+        and than, method() will call A::method because it calls it from inside A class.
+        than, it will print:
+        "from A"
