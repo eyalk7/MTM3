@@ -9,7 +9,7 @@ int CountPairsByCondition(Iterator first, Iterator last, const Predicate& pred){
     for (Iterator i=first; i<last; ++i){
         for (Iterator j=i; j<last; ++j) {
             ++j;
-            if (pred(i,j) && pred(j,i)) {
+            if (pred(i,j) && pred(j,i)) { // validate that the order between the elements does not matter
                 count++;
             }
         }
@@ -20,6 +20,7 @@ int CountPairsByCondition(Iterator first, Iterator last, const Predicate& pred){
 bool isSorted(vector<int> v) {
     typedef std::vector<int>::iterator v_iterator;
 
+    // predicate object function class
     class BiggerThan {
         int bar;
 
@@ -33,6 +34,8 @@ bool isSorted(vector<int> v) {
 
     int current_bar = v.front() - 1;
 
+    // check that every consecutive pair is bigger than the element before both of them
+    // and that they aren't equal to each other.
     for (v_iterator i=v.begin(); i<v.end()-1; ++i) {
         if ( CountPairsByCondition<v_iterator, BiggerThan>(i,i+2,BiggerThan(current_bar)) < 1) {
             return false;
