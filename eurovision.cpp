@@ -29,13 +29,13 @@ void Participant::update(const string& name, int length, const string& singer) {
     if (m_is_registered) return;
 
     // check values and if they are valid, update the participant
-    if (name != "") {
+    if (name.empty()) {
         m_song = name;
     }
     if (length > 0) {
         m_song_length = length;
     }
-    if (singer != "") {
+    if (singer.empty()) {
         m_singer = singer;
     }
 }
@@ -197,7 +197,6 @@ MainControl& MainControl::operator+=(const Vote& vote) {
     // else, add the points, according to voterType
     if (vote.m_voter.voterType() == Regular) { // regular voter
         if (vote.m_voter.timesOfVotes() >= m_max_regular_votes) return *this; // reached voting limit - return
-        if (!checkOnlyOneState(vote)) return *this; // the Vote struct contain more than one state to vote for
         addPointsIfLegal(vote, vote.m_states[0], 1); // add point to voted state
     } else if (vote.m_voter.voterType() == Judge) {
         if (vote.m_voter.timesOfVotes() > 0) return *this; // reached voting limit - return
@@ -210,6 +209,7 @@ MainControl& MainControl::operator+=(const Vote& vote) {
 
 string MainControl::operator()(int place, VoterType type) const {
     Iterator winner = get<Iterator,VoteCompare>(begin(), end(), place, VoteCompare(type));
+    if (winner == end()) return ""; // place < 1 or > num of participants
     return (*winner).state();
 }
 
@@ -266,7 +266,10 @@ bool MainControl::Iterator::operator==(const Iterator& other) const {
 
 const Participant& MainControl::Iterator::operator*() const {
     // what if this is the end dummy ??
-    assert(current->next != nullptr);
+    //assert(current->next != nullptr);
+    if (current->next == nullptr) {
+        std::cout << "bla";
+    }
 
     return (this->current->participant);
 }
@@ -326,14 +329,6 @@ Ranking MainControl::getRanking(int place) {
     };
 
     return ranking[place];
-}
-
-bool MainControl::checkOnlyOneState(const Vote& vote) {
-    for (int i=1; i<10; i++) {
-        if (vote.m_states[i] != "") return false; // contains more than one state to vote for
-    }
-    // else
-    return true;
 }
 // -----------------------------------------------------------
 

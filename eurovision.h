@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <assert.h>
+#include <algorithm>
 
 // it's allowed to define here any using statements, according to needs.
 // do NOT define here : using namespace std;
@@ -51,7 +52,7 @@ Iterator get(const Iterator& first,const Iterator& last, int i, const Predicate&
     if (iter_sequence.size() < i) return last; // i is too big
 
     // sort the iterator array from biggest to smallest
-    iter_sequence.sort(condition);
+    std::sort(iter_sequence.begin(), iter_sequence.end(), condition);
     //iter_sequence.reverse();
 
     return iter_sequence[i - 1];
@@ -176,8 +177,6 @@ class MainControl
     static string getPhaseText(Phase phase);
     // internal function for getting Judge points
     static Ranking getRanking(int place);
-    // internal function to check if a Vote element contains one state to vote for
-    static bool checkOnlyOneState(const Vote& vote);
 
 public :
 
@@ -203,7 +202,7 @@ public :
         VoterType type;
 
     public:
-        VoteCompare(VoterType v_type) : type(v_type) {
+        explicit VoteCompare(VoterType v_type) : type(v_type) {
         }
 
         bool operator()(MainControl::Iterator iter1, MainControl::Iterator iter2) {
