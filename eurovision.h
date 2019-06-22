@@ -211,8 +211,8 @@ public :
             int judge_votes_1 = node1->m_judge_votes;
 
             ParticipantNode* node2 = iter2.current;
-            int regular_votes_2 = node1->m_regular_votes;
-            int judge_votes_2 = node1->m_judge_votes;
+            int regular_votes_2 = node2->m_regular_votes;
+            int judge_votes_2 = node2->m_judge_votes;
 
             int votes_1 = 0, votes_2 = 0;
             switch (type) {

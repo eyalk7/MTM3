@@ -29,13 +29,13 @@ void Participant::update(const string& name, int length, const string& singer) {
     if (m_is_registered) return;
 
     // check values and if they are valid, update the participant
-    if (name.empty()) {
+    if (!name.empty()) {
         m_song = name;
     }
     if (length > 0) {
         m_song_length = length;
     }
-    if (singer.empty()) {
+    if (!singer.empty()) {
         m_singer = singer;
     }
 }
@@ -209,7 +209,7 @@ MainControl& MainControl::operator+=(const Vote& vote) {
 
 string MainControl::operator()(int place, VoterType type) const {
     Iterator winner = get<Iterator,VoteCompare>(begin(), end(), place, VoteCompare(type));
-    if (winner == end()) return ""; // place < 1 or > num of participants
+    if (winner == end()) return ""; // place is smaller than 1 or bigger than num of participants
     return (*winner).state();
 }
 
