@@ -208,13 +208,9 @@ MainControl& MainControl::operator+=(const Vote& vote) {
     return *this;
 }
 
-string& MainControl::operator()(int place, VoterType type) const {
-    string* str = new string("");
-
-    // VoteCompare<voteType> vote_cmp;
-    // Iterator winner = get(begin(), end(), place, vote_cmp);
-    
-    return *str;
+string MainControl::operator()(int place, VoterType type) const {
+    Iterator winner = get<Iterator,VoteCompare>(begin(), end(), place, VoteCompare(type));
+    return (*winner).state();
 }
 
 ostream& operator<<(ostream& os, const MainControl& eurovision) {
@@ -271,7 +267,6 @@ bool MainControl::Iterator::operator==(const Iterator& other) const {
 const Participant& MainControl::Iterator::operator*() const {
     // what if this is the end dummy ??
     assert(current->next != nullptr);
-
 
     return (this->current->participant);
 }

@@ -199,8 +199,13 @@ public :
 // are mentioned and demonstrated in the test example that has been published.
 // NO OTHER METHODS SHOULD APPEAR HERE.
 
-    template<VoterType VoteT>
     class VoteCompare {
+        VoterType type;
+
+    public:
+        VoteCompare(VoterType v_type) : type(v_type) {
+        }
+
         bool operator()(MainControl::Iterator iter1, MainControl::Iterator iter2) {
             ParticipantNode* node1 = iter1.current;
             int regular_votes_1 = node1->m_regular_votes;
@@ -211,7 +216,7 @@ public :
             int judge_votes_2 = node1->m_judge_votes;
 
             int votes_1 = 0, votes_2 = 0;
-            switch (VoteT) {
+            switch (type) {
                 case Regular:
                     votes_1 = regular_votes_1;
                     votes_2 = regular_votes_2;
@@ -248,7 +253,7 @@ public :
     MainControl& operator-=(Participant& participant);
     MainControl& operator+=(const Vote& vote);
 
-    string& operator()(int place, VoterType type) const;
+    string operator()(int place, VoterType type) const;
 
 // Also it's allowed here to define friend.
     friend ostream& operator<<(ostream& os, const MainControl& eurovision);
