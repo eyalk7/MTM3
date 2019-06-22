@@ -266,10 +266,7 @@ bool MainControl::Iterator::operator==(const Iterator& other) const {
 
 const Participant& MainControl::Iterator::operator*() const {
     // what if this is the end dummy ??
-    //assert(current->next != nullptr);
-    if (current->next == nullptr) {
-        std::cout << "bla";
-    }
+    assert(current->next != nullptr);
 
     return (this->current->participant);
 }
