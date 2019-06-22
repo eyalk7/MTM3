@@ -10,7 +10,6 @@
 using std::string;
 using std::ostream;
 using std::endl;
-
 using std::vector;
 
 //---------------------------------------------------

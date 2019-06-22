@@ -3,7 +3,7 @@
 using std::vector;
 
 template<class Iterator, class Predicate>
-int CountPairsByCondition(Iterator first, Iterator last, const Predicate& pred){
+int CountPairsByCondition(cosnt Iterator& first, const Iterator& last, const Predicate& pred){
     int count=0;
 
     for (Iterator i=first; i<last; ++i){
@@ -27,7 +27,7 @@ bool isSorted(vector<int> v) {
     public:
         BiggerThan(const int c_bar) : bar(c_bar) {
         }
-        bool operator()(const v_iterator a, const v_iterator b) const {
+        bool operator()(const v_iterator& a, const v_iterator& b) const {
             return (*a > bar && *b > bar && *a != *b);
         }
     };
