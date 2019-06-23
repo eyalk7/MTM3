@@ -12,7 +12,6 @@ class NoPrice : public exception
 {
 private:
     string m_message;
-
 public:
     explicit NoPrice(const string& message);
     virtual const char* what() const throw();
@@ -23,10 +22,8 @@ class Seat
 {
     int m_line;
     int m_chair;
-
 protected:
     int m_price;
-
 public:
     Seat(int line, int chair, int base_price);
     virtual ~Seat() = default;
@@ -58,7 +55,6 @@ public:
 // ---------------------------------------------
 class SpecialSeat : public MainHallSeat
 {
-
 public:
     SpecialSeat(int line , int chair, int price);
 
@@ -79,7 +75,6 @@ public:
 // ---------------------------------------------
 class DisablePodiumSeat : public SpecialSeat
 {
-
 public:
     DisablePodiumSeat(int line, int chair, int price = 0);
 
@@ -91,7 +86,6 @@ public:
 class RegularSeat : public MainHallSeat
 {
     char m_area;
-
 public:
     RegularSeat(char area, int line, int chair, int price);
 
@@ -102,7 +96,6 @@ public:
 // ---------------------------------------------
 class FrontRegularSeat : public RegularSeat
 {
-
 public:
     FrontRegularSeat(char area, int line, int chair, int price);
 
@@ -113,7 +106,6 @@ public:
 // ---------------------------------------------
 class MiddleRegularSeat : public RegularSeat
 {
-
 public:
     MiddleRegularSeat(char area, int line, int chair, int price);
 
@@ -124,7 +116,6 @@ public:
 // ---------------------------------------------
 class RearRegularSeat : public RegularSeat
 {
-
 public:
     RearRegularSeat(char area, int line, int chair, int price);
 
