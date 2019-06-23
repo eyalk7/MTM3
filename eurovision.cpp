@@ -242,8 +242,8 @@ ostream& operator<<(ostream& os, const MainControl& eurovision) {
 MainControl::Iterator::Iterator() : current(nullptr) {}
 
 bool MainControl::Iterator::operator<(const Iterator& other) const {
-    if (current == end()) return false;
-    if (other.current == end()) return true;
+    if (current->next == nullptr) return false; // current == end()
+    if (other.current->next == nullptr) return true;    // other.current == end()
 
     Participant& p1 = current->participant;
     Participant& p2 = other.current->participant;
@@ -252,7 +252,7 @@ bool MainControl::Iterator::operator<(const Iterator& other) const {
 
 MainControl::Iterator MainControl::Iterator::operator++() {
     // check if reached the last node
-    if (current != end()) {
+    if (current->next != nullptr) { // current != end()
         current = current->next;
     }
     return *this;
@@ -263,7 +263,7 @@ bool MainControl::Iterator::operator==(const Iterator& other) const {
 }
 
 const Participant& MainControl::Iterator::operator*() const {
-    assert(current != end()); // can't dereference the end dummy
+    assert(current->next != nullptr); // can't dereference the end dummy
 
     return (this->current->participant);
 }
