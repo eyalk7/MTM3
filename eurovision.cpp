@@ -207,6 +207,44 @@ MainControl& MainControl::operator+=(const Vote& vote) {
     return *this;
 }
 
+MainControl::VoteCompare::VoteCompare(VoterType v_type) : type(v_type) {}
+
+bool MainControl::VoteCompare::operator()(MainControl::Iterator iter1, MainControl::Iterator iter2) {
+    ParticipantNode* node1 = iter1.current;
+    int regular_votes_1 = node1->m_regular_votes;
+    int judge_votes_1 = node1->m_judge_votes;
+
+    ParticipantNode* node2 = iter2.current;
+    int regular_votes_2 = node2->m_regular_votes;
+    int judge_votes_2 = node2->m_judge_votes;
+
+    int votes_1 = 0, votes_2 = 0;
+    switch (type) {
+        case Regular:
+            votes_1 = regular_votes_1;
+            votes_2 = regular_votes_2;
+            break;
+        case Judge:
+            votes_1 = judge_votes_1;
+            votes_2 = judge_votes_2;
+            break;
+        default: //case All:
+            votes_1 = regular_votes_1 + judge_votes_1;
+            votes_2 = regular_votes_2 + judge_votes_2;
+            break;
+    }
+
+
+    if (votes_1 == votes_2) {
+        // if no. of points is equal, the state with the bigger name
+        // goes first (true = Participant 1 has bigger state)
+        return node1->participant.state() > node2->participant.state();
+    }
+
+    // true = Participant 1 has more votes than Participant 2
+    return votes_1 > votes_2;
+}
+
 string MainControl::operator()(int place, VoterType type) const {
     Iterator winner = get<Iterator,VoteCompare>(begin(), end(), place, VoteCompare(type));
     if (winner == end()) return ""; // place is smaller than 1 or bigger than num of participants
