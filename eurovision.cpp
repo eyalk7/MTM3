@@ -7,13 +7,13 @@ Participant::Participant(const string& state, const string& song, int song_lengt
 }
 
 // get functions:
-string Participant::state() const {
+const string& Participant::state() const {
     return m_state;
 }
-string Participant::song() const {
+const string& Participant::song() const {
     return m_song;
 }
-string Participant::singer() const {
+const string& Participant::singer() const {
     return m_singer;
 }
 int Participant::timeLength() const {
@@ -57,7 +57,7 @@ Voter::Voter(const string& state, VoterType type) : m_state(state), m_type(type)
 int Voter::timesOfVotes() const {
     return m_times_of_votes;
 }
-string Voter::state() const {
+const string& Voter::state() const {
     return m_state;
 }
 VoterType Voter::voterType() const {
@@ -207,7 +207,7 @@ MainControl& MainControl::operator+=(const Vote& vote) {
     return *this;
 }
 
-string MainControl::operator()(int place, VoterType type) const {
+const string& MainControl::operator()(int place, VoterType type) const {
     Iterator winner = get<Iterator,VoteCompare>(begin(), end(), place, VoteCompare(type));
     if (winner == end()) return ""; // place is smaller than 1 or bigger than num of participants
     return (*winner).state();

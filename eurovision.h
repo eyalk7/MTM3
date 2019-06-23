@@ -77,9 +77,9 @@ public :
     Participant(Participant const&) = delete;
 
     // get functions:
-    string state() const;
-    string song() const;
-    string singer() const;
+    const string& state() const;
+    const string& song() const;
+    const string& singer() const;
     int timeLength() const;
     bool isRegistered() const;
 
@@ -106,7 +106,7 @@ public :
 
     // get :
     int timesOfVotes() const;
-    string state() const;
+    const string& state() const;
     VoterType voterType() const;
 
     Voter& operator++();
@@ -252,7 +252,7 @@ public :
     MainControl& operator-=(Participant& participant);
     MainControl& operator+=(const Vote& vote);
 
-    string operator()(int place, VoterType type) const;
+    const string& operator()(int place, VoterType type) const;
 
 // Also it's allowed here to define friend.
     friend ostream& operator<<(ostream& os, const MainControl& eurovision);
