@@ -189,7 +189,7 @@ public :
         bool operator<(const Iterator& other) const;
         Iterator operator++();
         bool operator==(const Iterator& other) const;
-        const Participant& operator*() const;
+        Participant& operator*() const;
     };
 
     Iterator begin() const;

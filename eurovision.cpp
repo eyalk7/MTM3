@@ -262,7 +262,7 @@ bool MainControl::Iterator::operator==(const Iterator& other) const {
     return current == other.current;
 }
 
-const Participant& MainControl::Iterator::operator*() const {
+Participant& MainControl::Iterator::operator*() const {
     assert(current->next != nullptr); // can't dereference the end dummy
 
     return (this->current->participant);
