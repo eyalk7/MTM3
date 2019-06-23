@@ -207,7 +207,7 @@ MainControl& MainControl::operator+=(const Vote& vote) {
     return *this;
 }
 
-const string& MainControl::operator()(int place, VoterType type) const {
+string MainControl::operator()(int place, VoterType type) const {
     Iterator winner = get<Iterator,VoteCompare>(begin(), end(), place, VoteCompare(type));
     if (winner == end()) return ""; // place is smaller than 1 or bigger than num of participants
     return (*winner).state();

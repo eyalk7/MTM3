@@ -252,7 +252,7 @@ public :
     MainControl& operator-=(Participant& participant);
     MainControl& operator+=(const Vote& vote);
 
-    const string& operator()(int place, VoterType type) const;
+    string operator()(int place, VoterType type) const;
 
 // Also it's allowed here to define friend.
     friend ostream& operator<<(ostream& os, const MainControl& eurovision);
