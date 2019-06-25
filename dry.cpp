@@ -3,14 +3,14 @@
 using std::vector;
 
 template<class Iterator, class Predicate>
-int CountPairsByCondition(cosnt Iterator& first, const Iterator& last, const Predicate& pred){
+int CountPairsByCondition(const Iterator& first, const Iterator& last, const Predicate& pred){
     int count=0;
 
     for (Iterator i=first; i<last; ++i){
         Iterator j=i;
         ++j;
         for ( ; j<last; ++j) {
-            if (pred(i,j) && pred(j,i)) { // validate that the order between the elements does not matter
+            if (pred(i,j)) { // validate that the order between the elements does not matter
                 count++;
             }
         }
