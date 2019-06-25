@@ -14,7 +14,7 @@ private:
     string m_message;
 public:
     explicit NoPrice(const string& message);
-    virtual const char* what() const throw();
+    virtual const char* what() const noexcept override;
 };
 
 // ---------------------------------------------

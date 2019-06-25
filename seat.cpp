@@ -4,7 +4,7 @@
 
 NoPrice::NoPrice(const string &message) : m_message(message) {}
 
-const char* NoPrice::what() const throw() {
+const char* NoPrice::what() const noexcept override {
     return m_message.c_str();
 }
 
