@@ -6,11 +6,12 @@ template<class Iterator, class Predicate>
 int CountPairsByCondition(const Iterator& first, const Iterator& last, const Predicate& pred){
     int count=0;
 
+    // iterate on the container and each time compare an elements with all of its consecutive
     for (Iterator i=first; i<last; ++i){
         Iterator j=i;
         ++j;
         for ( ; j<last; ++j) {
-            if (pred(i,j)) { // validate that the order between the elements does not matter
+            if (pred(i,j)) {
                 count++;
             }
         }
@@ -29,6 +30,7 @@ bool isSorted(vector<int> v) {
         BiggerThan(const int c_bar) : bar(c_bar) {
         }
         bool operator()(const v_iterator& a, const v_iterator& b) const {
+            // checks that both elements bigger than the bar and different from each other
             return (*a > bar && *b > bar && *a != *b);
         }
     };
@@ -37,6 +39,7 @@ bool isSorted(vector<int> v) {
 
     // check that every consecutive pair is bigger than the element before both of them
     // and that they aren't equal to each other.
+    // if that's true than the vector is upward monotone
     for (v_iterator i=v.begin(); i<v.end()-1; ++i) {
         if ( CountPairsByCondition<v_iterator, BiggerThan>(i,i+2,BiggerThan(current_bar)) < 1) {
             return false;
