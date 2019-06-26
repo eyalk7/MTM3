@@ -92,7 +92,10 @@ a.)
 b.)  We can make Base's method() function virtual. That will make the program check the object's real type in runtime,
     and call the relevant function to that type. The 'base' variable points to an A object, therefore, it will call
     A::method() instead of Base::method() in the second line in main(). A::method() will then print "from A" in the
-    first line, instead of "from Base".
+    first line, instead of "from Base". Overall the new output will be:
+    from A
+    from A
+    from Base
 
 c.) From A's c'tor call Base::baseMethod(), and then call A::method()
     In code:
@@ -100,8 +103,8 @@ c.) From A's c'tor call Base::baseMethod(), and then call A::method()
             baseMethod();
             method();
         }
-        Now, when A's c'tor is called in the first line in main, Base::baseMethod() will print:
-        "from Base" (like we explained in a.)
-        and then A::method() will print:
-        "from A"
-        as required
+    Now, when A's c'tor is called in the first line in main, Base::baseMethod() will print:
+    "from Base" (like we explained in a.)
+    and then A::method() will print:
+    "from A"
+    as required.

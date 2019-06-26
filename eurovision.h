@@ -2,23 +2,21 @@
 #define EUROVISION_H_
 
 #include <iostream>
-#include <vector>
 #include <assert.h>
-#include <algorithm>
+#include <algorithm> // used in get function for sorting
+#include <vector>    // used in get function
 
-// it's allowed to define here any using statements, according to needs.
-// do NOT define here : using namespace std;
 using std::string;
-using std::ostream;
-using std::endl;
-using std::vector;
+using std::ostream; // for printing
+using std::endl;    // for printing
+using std::vector;  // used in get function
 
 //---------------------------------------------------
 
 enum VoterType { All, Regular, Judge };
 enum Phase { Registration, Contest, Voting };
 
-/**  enum for number of points in each rank */
+/**  enum for number of points the judge gives based on the ranking */
 const int NUMBER_OF_RANKINGS = 10;
 typedef enum {
     TENTH_PLACE = 1,
@@ -34,6 +32,7 @@ typedef enum {
 } Ranking;
 
 //---------------------------------------------------
+
 template<typename Iterator, class Predicate>
 Iterator get(const Iterator& first,const Iterator& last, int i, const Predicate& condition) {
     // Assumption: The given condition is a function object that receives two
@@ -61,42 +60,69 @@ Iterator get(const Iterator& first,const Iterator& last, int i, const Predicate&
 
 class Participant
 {
-// relevant private members can be defined here, if necessary.
-    const string m_state;
-    string m_song;
-    string m_singer;
-    int m_song_length;
-    bool m_is_registered;
+    const string m_state; // The state the participant is from
+    string m_song;        // The name of the participant's song
+    int m_song_length;    // The length of the song
+    string m_singer;      // The name of the participant's singer
 
-public :
-    // need to define here possibly c'tr and d'tr and ONLY methods that
-    // are mentioned and demonstrated in the test example that has been published.
-    // NO OTHER METHODS SHOULD APPEAR HERE.
+    bool m_is_registered; // Boolean stating whether the participant is registered or not
 
+public:
+    /// Constructor for participants.
+    /// \param state - The state the participant is from
+    /// \param song - The name of the participant's song
+    /// \param song_length - The length of the song
+    /// \param singer - The name of the participant's singer
     Participant(const string& state, const string& song, int song_length, const string& singer);
-    Participant(Participant const&) = delete;
+
+    Participant(const Participant&) = delete; // never send a participant by value
 
     // get functions:
+
+    /// \return The name of the participant's state
     const string& state() const;
+
+    /// \return The name of the participant's song
     const string& song() const;
+
+    /// \return The name of the participant's singer
     const string& singer() const;
+
+    /// \return The length of the participant's song
     int timeLength() const;
+
+    /// \return True if the participant is registered, otherwise False.
     bool isRegistered() const;
 
     // set functions:
-    void update(const string& name, int length, const string& singer);
-    void updateRegistered(bool registered); // public, but the assumption is only specific MainControl functions use
 
+    /// If the participant is not registered, the function updates
+    /// it's name, length and singer according to the given parameters.
+    /// If the participant is registered, nothing happens.
+    /// Moreover, if a parameter is not valid the corresponding field won't be updated.
+    /// \param name - The new name to set
+    /// \param length - The new song length to set
+    /// \param singer - The new singer name to set
+    void update(const string& name, int length, const string& singer);
+
+    /// Updates the participant's status - registered/not registered.
+    /// Assumption: Only specific MainControl functions will use this function
+    /// \param registered - The new status to set for this participant's "is registered" state
+    void updateRegistered(bool registered);
 
     // NO friend is allowed here. :(
-
 };
 
+/// Printing/Output function for a participant
+/// \param os - The output stream
+/// \param participant - The participant to print
+/// \return The output stream that was given after
+///  having sent the participant's info through it
 ostream& operator<<(ostream& os, const Participant& participant);
 //---------------------------------------------------
+
 class Voter
 {
-    // relevant private members can be defined here, if necessary.
     const string m_state;     // voter's state
     const VoterType m_type;
     int m_times_of_votes;
@@ -111,10 +137,6 @@ public :
 
     Voter& operator++();
 
-    // need to define here possibly c'tr and d'tr and ONLY methods that
-    // are mentioned and demonstrated in the test example that has been published.
-    // NO OTHER METHODS SHOULD APPEAR HERE.
-
     // NO friend is allowed here. :(
 
 };
@@ -127,9 +149,6 @@ struct Vote
     Voter& m_voter;
     string* m_states;
 
-// ALL is public here.
-// need to define ONLY data members and c'tr and d'tr.
-// NO NEED to define anything else.
     Vote(Voter& voter, const string& state1,
          const string& state2 = "",
          const string& state3 = "",
@@ -148,7 +167,6 @@ struct Vote
 
 class MainControl
 {
-// relevant private members can be defined here, if necessary.
     // struct for participants list in MainControl element
     struct ParticipantNode {
         Participant& participant;
@@ -194,9 +212,6 @@ public :
 
     Iterator begin() const;
     Iterator end() const;
-// need to define here possibly c'tr and d'tr and ONLY methods that
-// are mentioned and demonstrated in the test example that has been published.
-// NO OTHER METHODS SHOULD APPEAR HERE.
 
     class VoteCompare {
         VoterType type;
@@ -217,7 +232,7 @@ public :
 
     string operator()(int place, VoterType type) const;
 
-// Also it's allowed here to define friend.
+    // Also it's allowed here to define friend. :)
     friend ostream& operator<<(ostream& os, const MainControl& eurovision);
 };
 
