@@ -31,7 +31,6 @@ int CountPairsByCondition(const Iterator& first, const Iterator& last, const Pre
 using std::vector;
 
 typedef std::vector<int>::iterator Vector_Iterator;
-if (v.size() < 2) return true;
 
 // Function Object for the predicate in isSorted
 class BiggerThan {
@@ -53,7 +52,7 @@ public:
 /// \param v - An integer vector
 /// \return True if the given vector is in ascending order, otherwise False.
 bool isSorted(vector<int> v) {
-    if (v.empty()) return true; // "empty vector is sorted" is vacuously true
+    if (v.size() < 2) return true; // "less than 2 vector is sorted" is vacuously true
 
     BiggerThan condition(v.front() - 1);  // initial condition
 
