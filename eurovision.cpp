@@ -300,9 +300,11 @@ bool MainControl::Iterator::operator<(const Iterator& other) const {
 
 MainControl::Iterator& MainControl::Iterator::operator++() {
     // check if reached the last node
+    // if reached last node, stay there
     if (current->next != nullptr) { // current != end()
         current = current->next;
     }
+
     return *this;
 }
 

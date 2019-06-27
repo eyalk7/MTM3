@@ -32,6 +32,7 @@ GreenRoomSeat::GreenRoomSeat(int line, int chair) :
                             Seat(line, chair, 0) {}
 
 int GreenRoomSeat::price() const {
+    // GreenRoomSeat doesn't have a price
     throw NoPrice("Not For Sale !");
 }
 
