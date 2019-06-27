@@ -3,7 +3,7 @@
 //---------------------------------------------------
 
 Participant::Participant(const string& state, const string& song, int song_length, const string& singer) :
-    m_state(state), m_song(song),  m_singer(singer), m_song_length(song_length), m_is_registered(false) {
+    m_state(state), m_song(song),  m_song_length(song_length), m_singer(singer), m_is_registered(false) {
 }
 
 // get functions:
@@ -24,11 +24,13 @@ bool Participant::isRegistered() const {
 }
 
 // set functions:
-void Participant::update(const string& name, int length, const string& singer) {
-    // if participant is registered can't do update
-    if (m_is_registered) return;
 
-    // check values and if they are valid, update the participant
+void Participant::update(const string& name, int length, const string& singer) {
+    if (m_is_registered) return; // if participant is registered, do nothing
+
+    // for each parameter check if it's value is valid
+    // and update the corresponding participant's field
+
     if (!name.empty()) {
         m_song = name;
     }
@@ -39,11 +41,14 @@ void Participant::update(const string& name, int length, const string& singer) {
         m_singer = singer;
     }
 }
+
 void Participant::updateRegistered(bool registered) {
     m_is_registered = registered;
 }
 
 ostream& operator<<(ostream& os, const Participant& participant) {
+    // Output format: [state/song/song length/singer]
+
     os << "[" << participant.state() << "/" << participant.song() << "/";
     os << participant.timeLength() << "/" << participant.singer() << "]";
     return os;
