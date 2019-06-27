@@ -31,6 +31,7 @@ int CountPairsByCondition(const Iterator& first, const Iterator& last, const Pre
 using std::vector;
 
 typedef std::vector<int>::iterator Vector_Iterator;
+if (v.size() < 2) return true;
 
 // Function Object for the predicate in isSorted
 class BiggerThan {

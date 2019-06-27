@@ -198,6 +198,7 @@ class MainControl
 
 public :
 
+
     class Iterator {
         ParticipantNode* current;
         friend MainControl;
