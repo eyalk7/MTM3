@@ -22,8 +22,8 @@ class Seat
 {
     int m_line;
     int m_chair;
-protected:
     int m_price;
+
 public:
     Seat(int line, int chair, int base_price);
     virtual ~Seat() = default;

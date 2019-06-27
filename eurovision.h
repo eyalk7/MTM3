@@ -2,7 +2,7 @@
 #define EUROVISION_H_
 
 #include <iostream>
-#include <assert.h>
+#include <cassert>
 #include <algorithm> // used in get function for sorting
 #include <vector>    // used in get function
 
@@ -68,7 +68,7 @@ class Participant
     bool m_is_registered; // Boolean stating whether the participant is registered or not
 
 public:
-    /// Constructor for participants.
+    /// Constructor for a participant.
     /// \param state - The state the participant is from
     /// \param song - The name of the participant's song
     /// \param song_length - The length of the song
@@ -213,7 +213,6 @@ class MainControl
     /// \param phase - The current phase of a Eurovision
     /// \return A string version of the given Phase.
     static string getPhaseText(Phase phase);
-    // internal function for getting Judge points
 
     /// Get the amount of points a judge gives to a state based its ranking.
     /// \param rank - The ranking a judge gave to a state
@@ -251,9 +250,19 @@ public:
     };
     //------------------------- EYAL DOES THIS :) - END ---------------------------------
 
+    /// Constructor for a MainCotnrol (Eurovision)
+    /// \param max_song_length - The maximum allowed song length
+    /// \param max_participants - The maximum allowed number of participants
+    /// \param max_regular_votes - The maximum allowed amount of regular votes per participant
     explicit MainControl(int max_song_length = 180, int max_participants = 26, int max_regular_votes = 5);
+
+    /// Destructor for MainControl (Eurovision)
     ~MainControl();
+
+    /// Function for setting/updating the Eurovision's phase
+    /// \param phase - The Eurovision's new phase
     void setPhase(Phase phase);
+
     bool participate(const string& state) const;
     bool legalParticipant(const Participant& participant) const;
 
