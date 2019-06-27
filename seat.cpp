@@ -12,6 +12,10 @@ const char* NoPrice::what() const noexcept override {
 Seat::Seat(int line, int chair, int base_price) :
         m_line(line), m_chair(chair), m_price(base_price) {}
 
+int Seat::price() const {
+    return m_price;
+}
+
 string Seat::location() const {
     string line("line: ");
     string row_number = to_string(m_line);
@@ -41,7 +45,7 @@ MainHallSeat::MainHallSeat(int line, int chair, int price) :
                             Seat(line, chair, price) {}
 
 int MainHallSeat::price() const {
-    return Seat::m_price + 100;
+    return Seat::price() + 100;
 }
 
 // ---------------------------------------------
