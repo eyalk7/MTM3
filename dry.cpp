@@ -52,7 +52,7 @@ public:
 /// \param v - An integer vector
 /// \return True if the given vector is in ascending order, otherwise False.
 bool isSorted(vector<int> v) {
-    if (v.size() < 2) return true; // "less than 2 vector is sorted" is vacuously true
+    if (v.size() < 2) return true; // "an empty vector or a vector with size 1 is sorted" is vacuously true
 
     BiggerThan condition(v.front() - 1);  // initial condition
 

@@ -1,12 +1,13 @@
 #include "eurovision.h"
 
-//---------------------------------------------------
+//-------------------------PARTICIPANT IMPLEMENTATION-------------------------
 
 Participant::Participant(const string& state, const string& song, int song_length, const string& singer) :
     m_state(state), m_song(song),  m_song_length(song_length), m_singer(singer), m_is_registered(false) {
 }
 
-// get functions:
+// Get functions:
+
 const string& Participant::state() const {
     return m_state;
 }
@@ -23,7 +24,7 @@ bool Participant::isRegistered() const {
     return m_is_registered;
 }
 
-// set functions:
+// Set functions:
 
 void Participant::update(const string& name, int length, const string& singer) {
     if (m_is_registered) return; // if participant is registered, do nothing
@@ -46,6 +47,8 @@ void Participant::updateRegistered(bool registered) {
     m_is_registered = registered;
 }
 
+//Operators:
+
 ostream& operator<<(ostream& os, const Participant& participant) {
     // Output format: [state/song/song length/singer]
 
@@ -53,12 +56,12 @@ ostream& operator<<(ostream& os, const Participant& participant) {
     os << participant.timeLength() << "/" << participant.singer() << "]";
     return os;
 }
-//---------------------------------------------------
+//-------------------------VOTER IMPLEMENTATION-------------------------
 Voter::Voter(const string& state, VoterType type) : m_state(state), m_type(type), m_times_of_votes(0) {
 
 }
 
-// get functions:
+// Get functions:
 int Voter::timesOfVotes() const {
     return m_times_of_votes;
 }
@@ -69,6 +72,7 @@ VoterType Voter::voterType() const {
     return m_type;
 }
 
+// Operators:
 Voter& Voter::operator++() {
     m_times_of_votes++;
     return *this;
@@ -86,7 +90,7 @@ ostream& operator<<(ostream& os, const Voter& voter) {
 
     return os << ">";
 }
-// -----------------------------------------------------------
+//-------------------------VOTE IMPLEMENTATION-------------------------
 
 Vote::Vote(Voter& voter, const string& state1,
            const string& state2, const string& state3, const string& state4,
@@ -103,7 +107,7 @@ Vote::~Vote() {
     delete[] m_states;
 }
 
-// -----------------------------------------------------------
+//-------------------------MAINCONTROL IMPLEMENTATION-------------------------
 
 MainControl::MainControl(int max_song_length,
                          int max_participants,
@@ -280,7 +284,7 @@ ostream& operator<<(ostream& os, const MainControl& eurovision) {
     return os;
 }
 
-// -------------- EUROVISION ITERATOR FUNCTIONS---------------------------
+//-------------------------MAINCONTROL ITERATOR FUNCTIONS-------------------------
 
 MainControl::Iterator::Iterator() : current(nullptr) {}
 
@@ -323,7 +327,7 @@ MainControl::Iterator MainControl::end() const {
     return iter;
 }
 
-// --------------INTERNAL FUNCTIONS---------------------------
+//-------------------------MAINCONTROL INTERNAL FUNCTIONS-------------------------
 
 MainControl::ParticipantNode& MainControl::findPrevNode(const string& state) const {
     // iterate on the participants list,
@@ -358,14 +362,14 @@ string MainControl::getPhaseText (Phase phase) {
     return "Contest";
 }
 
-Ranking MainControl::getRanking(int place) {
+Ranking MainControl::getRanking(int rank) {
     static const Ranking ranking[NUMBER_OF_RANKINGS] = { // points table for judges points
             FIRST_PLACE, SECOND_PLACE, THIRD_PLACE, FOURTH_PLACE,
             FIFTH_PLACE, SIXTH_PLACE, SEVENTH_PLACE, EIGHT_PLACE,
             NINTH_PLACE, TENTH_PLACE
     };
 
-    return ranking[place];
+    return ranking[rank];
 }
 // -----------------------------------------------------------
 

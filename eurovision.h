@@ -167,38 +167,61 @@ struct Vote
 
 class MainControl
 {
-    // struct for participants list in MainControl element
+    // Struct for participants' list in MainControl element
     struct ParticipantNode {
         Participant& participant;
         ParticipantNode *next;
-        int m_regular_votes;
-        int m_judge_votes;
+        int m_regular_votes;    // amount of regular votes the participant got
+        int m_judge_votes;      // amount of judge votes the participant got
 
         explicit ParticipantNode(Participant& participant, ParticipantNode* next_ptr) :
                 participant(participant), next(next_ptr), m_regular_votes(0), m_judge_votes(0) {
         }
 
     };
-    // internal functions for the ParticipantNode struct
+
+    // Member fields :
+    int m_max_song_length;      // maximum allowed song length
+    int m_max_participants;     // maximum allowed number of participants
+    int m_max_regular_votes;    // maximum allowed amount of regular votes per participant
+
+    ParticipantNode *m_participants_first;  // dummy node at the beginning of the participants list
+    ParticipantNode* m_participants_last;   // dummy node at the end of the participants list
+    int m_num_of_participants;              // current amount of participants (in the list)
+    Phase m_phase;                          // the current phase Eurovision is in
+
+
+    // Internal functions for the Participants' list:
+
+    /// This function is used in order to know the correct position
+    /// to add a new participant to the list or to find where it
+    /// currently is in the list.
+    /// \param state - The name of a state
+    /// \return The node in the participants list which should go before
+    /// a participant that is from the given state.
     ParticipantNode& findPrevNode(const string& state) const;
+
+    ///
+    /// \param vote
+    /// \param voted_state
+    /// \param num_of_points
     void addPointsIfLegal(const Vote& vote, const string& voted_state, int num_of_points) const;
 
-    ParticipantNode *m_participants_first;
-    ParticipantNode* m_participants_last;
-    int m_num_of_participants;
-    int m_max_song_length;
-    int m_max_participants;
-    int m_max_regular_votes;
-    Phase m_phase;
+    // Other internal functions:
 
-    // internal function for the printing function
+    /// Used to print the current Phase in the printing function.
+    /// \param phase - The current phase of a Eurovision
+    /// \return A string version of the given Phase.
     static string getPhaseText(Phase phase);
     // internal function for getting Judge points
-    static Ranking getRanking(int place);
 
-public :
+    /// Get the amount of points a judge gives to a state based its ranking.
+    /// \param rank - The ranking a judge gave to a state
+    /// \return The amount of points corresponding to the given rank.
+    static Ranking getRanking(int rank);
 
-
+public:
+    //------------------------- EYAL DOES THIS :) - BEGIN ---------------------------------
     class Iterator {
         ParticipantNode* current;
         friend MainControl;
@@ -220,6 +243,7 @@ public :
         explicit VoteCompare(VoterType v_type);
         bool operator()(MainControl::Iterator iter1, MainControl::Iterator iter2);
     };
+    //------------------------- EYAL DOES THIS :) - END ---------------------------------
 
     explicit MainControl(int max_song_length = 180, int max_participants = 26, int max_regular_votes = 5);
     ~MainControl();
