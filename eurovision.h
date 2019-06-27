@@ -33,6 +33,15 @@ typedef enum {
 
 //---------------------------------------------------
 
+/// Generic function that sorts a copy of a container by given condition and
+/// returns the #i element in the sorted container
+/// \tparam Iterator - Type of Iterator corresponding to the container
+/// \tparam Predicate - The type of condition to sort the container by
+/// \param first - Iterator pointing to the first item in the container
+/// \param last - Iterator pointing to the last item in the container
+/// \param i - number of element to return after the sorting
+/// \param condition - condition to sort the elements in the container by
+/// \return iterator to the #i element after the sorting
 template<typename Iterator, class Predicate>
 Iterator get(const Iterator& first,const Iterator& last, int i, const Predicate& condition) {
     // Assumption: The given condition is a function object that receives two
@@ -52,7 +61,6 @@ Iterator get(const Iterator& first,const Iterator& last, int i, const Predicate&
 
     // sort the iterator array from biggest to smallest
     std::sort(iter_sequence.begin(), iter_sequence.end(), condition);
-    //iter_sequence.reverse();
 
     return iter_sequence[i - 1];
 }
@@ -124,31 +132,52 @@ ostream& operator<<(ostream& os, const Participant& participant);
 class Voter
 {
     const string m_state;     // voter's state
-    const VoterType m_type;
-    int m_times_of_votes;
+    const VoterType m_type;   // voter's type
+    int m_times_of_votes;     // num of times the voter voted
 
 public :
+
+    /// constructor for Voter
+    /// \param state - the new Voter's state name
+    /// \param type - type of the new Voter. default is Regular
     explicit Voter(const string& state, VoterType type = Regular);
 
-    // get :
+    // get functions:
+
+    /// \return num of times the Voter voted
     int timesOfVotes() const;
+
+    /// \return the Voter's state name
     const string& state() const;
+
+    /// \return type of the Voter
     VoterType voterType() const;
 
+    // Voter methods:
+
+    /// increments the count of num of times the voter voted
+    /// \return reference to the Voter
     Voter& operator++();
 
     // NO friend is allowed here. :(
-
 };
 
+/// Printing/Output function for a participant
+/// \param os - The output stream
+/// \param voter - Voter to print it's details
+/// \return The output stream that was given after
+///  having sent the participant's info through it
 ostream& operator<<(ostream& os, const Voter& voter);
 // -----------------------------------------------------------
 
 struct Vote
 {
-    Voter& m_voter;
-    string* m_states;
+    Voter& m_voter; // reference to a Voter object
+    string* m_states; // voted states
 
+    /// constructor for Vote
+    /// \param voter - Voter object
+    /// \param state1-10 - voted states
     Vote(Voter& voter, const string& state1,
          const string& state2 = "",
          const string& state3 = "",
@@ -159,6 +188,8 @@ struct Vote
          const string& state8 = "",
          const string& state9 = "",
          const string& state10 = "");
+
+    /// destructor
     ~Vote();
 
 };
@@ -167,6 +198,7 @@ struct Vote
 
 class MainControl
 {
+
     // Struct for participants' list in MainControl element
     struct ParticipantNode {
         Participant& participant;
@@ -179,6 +211,7 @@ class MainControl
         }
 
     };
+
 
     // Member fields :
     int m_max_song_length;      // maximum allowed song length
@@ -207,6 +240,7 @@ class MainControl
     /// \param num_of_points
     void addPointsIfLegal(const Vote& vote, const string& voted_state, int num_of_points) const;
 
+
     // Other internal functions:
 
     /// Used to print the current Phase in the printing function.
@@ -220,7 +254,9 @@ class MainControl
     static Ranking getRanking(int rank);
 
 public:
-    //------------------------- EYAL DOES THIS :) - BEGIN ---------------------------------
+
+    // Iterator class for MainControl:
+
     class Iterator {
         ParticipantNode* current; // current pointed element
         friend MainControl;
@@ -249,13 +285,23 @@ public:
     /// \return an Iterator to the last element in MainControl
     Iterator end() const;
 
+
+    // function-object class to use in operator() of MainControl:
+
     class VoteCompare {
-        VoterType type;
+        VoterType type; // type of voters to compare
     public:
+
+        /// constructor for VoteCompare
+        /// \param v_type type of voters to compare
         explicit VoteCompare(VoterType v_type);
+
+        /// \param iter1 and iter2 - Iterator to compare their pointed data
         bool operator()(MainControl::Iterator iter1, MainControl::Iterator iter2);
     };
-    //------------------------- EYAL DOES THIS :) - END ---------------------------------
+
+
+    // MainControl methods:
 
     /// Constructor for a MainCotnrol (Eurovision)
     /// \param max_song_length - The maximum allowed song length
