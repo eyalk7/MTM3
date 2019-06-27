@@ -48,7 +48,7 @@ Iterator get(const Iterator& first,const Iterator& last, int i, const Predicate&
         iter_sequence.insert(iter_sequence.begin(), iter);
     }
 
-    if (iter_sequence.size() < i) return last; // i is too big
+    if (iter_sequence.size() < (unsigned int)i) return last; // i is too big
 
     // sort the iterator array from biggest to smallest
     std::sort(iter_sequence.begin(), iter_sequence.end(), condition);

@@ -112,10 +112,10 @@ Vote::~Vote() {
 MainControl::MainControl(int max_song_length,
                          int max_participants,
                          int max_regular_votes) :
-                         m_num_of_participants(0),
                          m_max_song_length(max_song_length),
                          m_max_participants(max_participants),
                          m_max_regular_votes(max_regular_votes),
+                         m_num_of_participants(0),
                          m_phase(Registration) {
     // insert dummy node in start and at the end of participants list
     Participant* first_dummy = new Participant("","",0,"");
@@ -286,12 +286,13 @@ ostream& operator<<(ostream& os, const MainControl& eurovision) {
 
 //-------------------------MAINCONTROL ITERATOR FUNCTIONS-------------------------
 
-MainControl::Iterator::Iterator() : current(nullptr) {}
+MainControl::Iterator::Iterator() : current(nullptr)     {} // initialize to point on nullptr
 
 bool MainControl::Iterator::operator<(const Iterator& other) const {
     if (current->next == nullptr) return false; // current == end()
     if (other.current->next == nullptr) return true;    // other.current == end()
 
+    // use the fact that the container is sorted by the states name
     Participant& p1 = current->participant;
     Participant& p2 = other.current->participant;
     return p1.state() < p2.state();
