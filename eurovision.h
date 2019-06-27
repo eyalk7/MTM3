@@ -234,13 +234,20 @@ public:
         bool operator<(const Iterator& other) const;
 
         /// move the Iterator forward to the next element in MainControl
-        /// \return Ite
+        /// \return reference to the same Iterator
         Iterator& operator++();
+
+        /// \return true if Iterator is same as the Iterator in the parenthesis
         bool operator==(const Iterator& other) const;
+
+        /// \return reference to the Participant that the Iterator points at
         Participant& operator*() const;
     };
 
+    /// \return an Iterator to the first element in MainControl
     Iterator begin() const;
+
+    /// \return an Iterator to the last element in MainControl
     Iterator end() const;
 
     class VoteCompare {
