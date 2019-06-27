@@ -293,7 +293,7 @@ bool MainControl::Iterator::operator<(const Iterator& other) const {
     return p1.state() < p2.state();
 }
 
-MainControl::Iterator MainControl::Iterator::operator++() {
+MainControl::Iterator& MainControl::Iterator::operator++() {
     // check if reached the last node
     if (current->next != nullptr) { // current != end()
         current = current->next;

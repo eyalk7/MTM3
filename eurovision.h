@@ -198,15 +198,20 @@ class MainControl
 
 public :
 
-
     class Iterator {
-        ParticipantNode* current;
+        ParticipantNode* current; // current pointed element
         friend MainControl;
 
         public:
+        /// constructor for Iterators
         Iterator();
+
+        /// \return true if the Iterator points on an element that come before the Iterator in the parenthesis
         bool operator<(const Iterator& other) const;
-        Iterator operator++();
+
+        /// move the Iterator forward to the next element in MainControl
+        /// \return Ite
+        Iterator& operator++();
         bool operator==(const Iterator& other) const;
         Participant& operator*() const;
     };
