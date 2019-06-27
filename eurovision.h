@@ -263,19 +263,52 @@ public:
     /// \param phase - The Eurovision's new phase
     void setPhase(Phase phase);
 
+    /// Checks if a state is participating in the Eurovision
+    /// \param state - The state's name to check the participation of
+    /// \return True if the given state is participating, otherwise False
     bool participate(const string& state) const;
+
+    /// Checks whether the given participant is valid
+    /// (to participate in the Eurovision)
+    /// \param participant - The participant to check if it's legal
+    /// \return True if the given participant is allowed to participate, otherwise False
     bool legalParticipant(const Participant& participant) const;
 
+    /// Add a participant to the Eurovision, given that it's legal.
+    /// \param participant - The participant to add
+    /// \return The updated Eurovision
     MainControl& operator+=(Participant& participant);
+
+    /// Remove a participant from the Eurovision, given that it
+    /// is in the participants list.
+    /// \param participant - The participant to remove
+    /// \return The updated Eurovision
     MainControl& operator-=(Participant& participant);
+
+    /// Add a vote to a participating state
+    /// \param vote - The vote to add
+    /// \return The updated Eurovision
+    /// (with the corresponding state having updated vote count)
     MainControl& operator+=(const Vote& vote);
 
+    /// Gets the the n-th winner of the Eurovision
+    /// based on a certain type of votes (Regular, Judge or All)
+    /// \param place - The place the returned state is in
+    /// \param type - The type of vote by which to order the participants
+    /// \return The state name of the n-th winner (place = n)
     string operator()(int place, VoterType type) const;
 
     // Also it's allowed here to define friend. :)
+
+    // Allow the external printing function to access the class members
     friend ostream& operator<<(ostream& os, const MainControl& eurovision);
 };
 
+/// Printing/Output function for MainControl (Eurovision)
+/// \param os - An output stream
+/// \param eurovision - A Eurovision
+/// \return The output stream that was given after
+///  having sent the Eurovision info through it
 ostream& operator<<(ostream& os, const MainControl& eurovision);
 
 // -----------------------------------------------------------
