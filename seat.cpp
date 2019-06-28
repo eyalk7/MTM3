@@ -1,5 +1,15 @@
 #include "seat.h"
 
+//------------------CONST NUMBERS---------------
+
+const int GREEN_ROOM_PRICE = 0;
+const int MAIN_HALL_PRICE = 100;
+const int SPECIAL_PRICE = 300;
+const int GOLDEN_CIRCLE_PRICE = 1000;
+const int DISABLE_PODIUM_PRICE = 200;
+const int FRONT_REGULAR_PRICE = 500;
+const int MIDDLE_REGULAR_PRICE = 250;
+
 // ---------------------------------------------
 
 NoPrice::NoPrice(const string &message) : m_message(message) {}
@@ -29,7 +39,7 @@ string Seat::location() const {
 // ---------------------------------------------
 
 GreenRoomSeat::GreenRoomSeat(int line, int chair) :
-                            Seat(line, chair, 0) {}
+                            Seat(line, chair, GREEN_ROOM_PRICE) {}
 
 int GreenRoomSeat::price() const {
     // GreenRoomSeat doesn't have a price
@@ -46,7 +56,7 @@ MainHallSeat::MainHallSeat(int line, int chair, int price) :
                             Seat(line, chair, price) {}
 
 int MainHallSeat::price() const {
-    return Seat::price() + 100;
+    return Seat::price() + MAIN_HALL_PRICE;
 }
 
 // ---------------------------------------------
@@ -54,7 +64,7 @@ SpecialSeat::SpecialSeat(int line , int chair, int price) :
                         MainHallSeat(line, chair, price) {}
 
 int SpecialSeat::price() const {
-    return MainHallSeat::price() + 300;
+    return MainHallSeat::price() + SPECIAL_PRICE;
 }
 
 // ---------------------------------------------
@@ -65,7 +75,7 @@ string GoldenCircleSeat::location() const {
     return "Golden Circle-> " + Seat::location();
 }
 int GoldenCircleSeat::price() const {
-    return SpecialSeat::price() + 1000;
+    return SpecialSeat::price() + GOLDEN_CIRCLE_PRICE;
 }
 
 // ---------------------------------------------
@@ -76,7 +86,7 @@ string DisablePodiumSeat::location() const {
     return "Disable Podium-> " + Seat::location();
 }
 int DisablePodiumSeat::price() const {
-    return 200;
+    return DISABLE_PODIUM_PRICE;
 }
 
 // ---------------------------------------------
@@ -96,7 +106,7 @@ FrontRegularSeat::FrontRegularSeat(char area, int line, int chair, int price) :
 
 
 int FrontRegularSeat::price() const {
-    return MainHallSeat::price() + 500;
+    return MainHallSeat::price() + FRONT_REGULAR_PRICE;
 }
 string FrontRegularSeat::location() const {
     return "Front-> " + RegularSeat::location();
@@ -108,7 +118,7 @@ MiddleRegularSeat::MiddleRegularSeat(char area, int line, int chair, int price) 
                                 RegularSeat(area, line, chair, price) {}
 
 int MiddleRegularSeat::price() const {
-    return MainHallSeat::price() + 250;
+    return MainHallSeat::price() + MIDDLE_REGULAR_PRICE;
 }
 string MiddleRegularSeat::location() const {
     return "Middle-> " + RegularSeat::location();
