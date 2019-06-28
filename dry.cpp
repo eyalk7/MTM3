@@ -18,7 +18,7 @@ int CountPairsByCondition(const Iterator& first, const Iterator& last, const Pre
         ++j;    // j = i + 1 --> the same element will never be a pair on its own
         for (; j < last; ++j) {
             // check the condition is satisfied regardless of the pair's order
-            if (pred(i,j) && pred(j,i)) {
+            if (pred(i,j)) {
                 count++;
             }
         }
@@ -34,17 +34,12 @@ typedef std::vector<int>::iterator Vector_Iterator;
 
 // Function Object for the predicate in isSorted
 class BiggerThan {
-    int m_bar;
-
 public:
-    BiggerThan(int bar) : m_bar(bar) {}
+    BiggerThan() {}
 
-    // checks that both integers are bigger than bar and not equal to each other
+    // checks if second element bigger or equale to first
     bool operator()(const Vector_Iterator& iter1, const Vector_Iterator& iter2) const {
-        return (*iter1 > m_bar && *iter2 > m_bar && *iter1 != *iter2);
-    }
-    void updateBar(int new_bar) {
-        m_bar = new_bar;
+        return (*iter1 >= *iter2);
     }
 };
 
@@ -54,21 +49,11 @@ public:
 bool isSorted(vector<int> v) {
     if (v.size() < 2) return true; // "an empty vector or a vector with size 1 is sorted" is vacuously true
 
-    BiggerThan condition(v.front() - 1);  // initial condition
+    // check if there is an big element that come before small element
+    int pair_count = CountPairsByCondition<Vector_Iterator, BiggerThan>(v.begin(), v.end() , BiggerThan());
+    if (pair_count  > 0) return false;
 
-    // check that both elements in every consecutive pair is
-    // bigger than the first element minus 1 and that they aren't equal to each other
-    // <=> check that first element < second element
-    for (Vector_Iterator i = v.begin(); i < v.end() - 1; ++i) {
-        condition.updateBar(*i - 1); // update the condition for next pair
-
-        int pair_count = CountPairsByCondition<Vector_Iterator, BiggerThan>(i, i+2, condition);
-
-        if (pair_count < 1) { // first element >= second element
-            return false;     // vector is not ordered in ascending order
-        }
-    }
-
+    //else
     return true;
 }
 

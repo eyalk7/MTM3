@@ -136,6 +136,7 @@ MainControl::~MainControl() {
     // that were created in the operator+= function
     ParticipantNode* iterator = m_first->next;
     while (iterator != m_last) {
+        iterator->participant.updateRegistered(false);
         ParticipantNode* to_delete = iterator;
         iterator = iterator->next;
         delete to_delete;
