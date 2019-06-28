@@ -99,7 +99,7 @@ Vote::Vote(Voter& voter, const string& state1,
            const string& state5, const string& state6, const string& state7,
            const string& state8, const string& state9, const string& state10) :
         m_voter(voter) {
-    m_states = new string[10] {
+    m_states = new string[NUMBER_OF_RANKINGS] {
             state1, state2, state3, state4, state5, state6, state7, state8, state9, state10
     };
 }
@@ -226,7 +226,7 @@ MainControl& MainControl::operator+=(const Vote& vote) {
     } else if (vote.m_voter.voterType() == Judge) {
         if (vote.m_voter.timesOfVotes() > 0) return *this; // reached judge voting limit
 
-        for (int i=0; i < 10; i++) {
+        for (int i=0; i < NUMBER_OF_RANKINGS; i++) {
             addPointsIfLegal(vote.m_voter, vote.m_states[i], getRanking(i));  // add points according to ranking
         }
     }
