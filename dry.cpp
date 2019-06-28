@@ -57,16 +57,16 @@ bool isSorted(vector<int> v) {
     BiggerThan condition(v.front() - 1);  // initial condition
 
     // check that both elements in every consecutive pair is
-    // bigger than the element before and that they aren't equal to each other
+    // bigger than the first element minus 1 and that they aren't equal to each other
     // <=> check that first element < second element
     for (Vector_Iterator i = v.begin(); i < v.end() - 1; ++i) {
+        condition.updateBar(*i - 1); // update the condition for next pair
+
         int pair_count = CountPairsByCondition<Vector_Iterator, BiggerThan>(i, i+2, condition);
 
         if (pair_count < 1) { // first element >= second element
             return false;     // vector is not ordered in ascending order
         }
-
-        condition.updateBar(*i); // update the condition for next pair
     }
 
     return true;

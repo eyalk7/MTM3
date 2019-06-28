@@ -218,10 +218,10 @@ class MainControl
     int m_max_participants;     // maximum allowed number of participants
     int m_max_regular_votes;    // maximum allowed amount of regular votes per participant
 
-    ParticipantNode *m_participants_first;  // dummy node at the beginning of the participants list
-    ParticipantNode* m_participants_last;   // dummy node at the end of the participants list
     int m_num_of_participants;              // current amount of participants (in the list)
     Phase m_phase;                          // the current phase Eurovision is in
+    ParticipantNode *m_first;  // dummy node at the beginning of the participants list
+    ParticipantNode* m_last;   // dummy node at the end of the participants list
 
 
     // Internal functions for the Participants' list:
@@ -234,11 +234,15 @@ class MainControl
     /// a participant that is from the given state.
     ParticipantNode& findPrevNode(const string& state) const;
 
-    ///
-    /// \param vote
-    /// \param voted_state
-    /// \param num_of_points
-    void addPointsIfLegal(const Vote& vote, const string& voted_state, int num_of_points) const;
+
+    /// Update a participant's points by the given amount, if the vote is allowed.
+    /// If the voter's state is equal to the voted state, nothing happens.
+    /// If the voted state is not a participant in the Eurovision, nothing happens.
+    /// The amount of times a voter has voted is also updated.
+    /// \param voter - The voter
+    /// \param voted_state - The state of the participant to update
+    /// \param num_of_points - The amount of points to give
+    void addPointsIfLegal(Voter& voter, const string& voted_state, int num_of_points) const;
 
 
     // Other internal functions:
@@ -248,7 +252,8 @@ class MainControl
     /// \return A string version of the given Phase.
     static string getPhaseText(Phase phase);
 
-    /// Get the amount of points a judge gives to a state based its ranking.
+    /// A function that matches the ranking a judge gave to a state
+    /// to the amount of points it should receive from that judge.
     /// \param rank - The ranking a judge gave to a state
     /// \return The amount of points corresponding to the given rank.
     static Ranking getRanking(int rank);
