@@ -197,30 +197,33 @@ MainControl& MainControl::operator+=(Participant& participant) {
 }
 
 MainControl& MainControl::operator-=(Participant& participant) {
-    // if not Registration phase or if the participant not registered, just return
+    // Check registration phase is not over and participant is participating
     if (m_phase != Registration || !participant.isRegistered()) return *this;
 
-    // else, remove the participant
+    // Remove the node in the list where the participant is in and free
     ParticipantNode& prev_node = findPrevNode(participant.state());
     ParticipantNode* to_delete = prev_node.next;
     prev_node.next = prev_node.next->next;
     delete to_delete;
 
-    participant.updateRegistered(false); // update is_registered in participant to false
-    m_num_of_participants--; // reduce count of participants in MainControl
+    participant.updateRegistered(false); // set the participant as not registered
+    m_num_of_participants--;             // reduce count of participants in MainControl
     return *this;
 }
 
 MainControl& MainControl::operator+=(const Vote& vote) {
-    if (m_phase != Voting) return *this; // if the MainControl element's phase isn't "Voting" - return
-    if (!participate(vote.m_voter.state())) return *this; // if the voter's state doesn't participates  - return
+    // Check it's Voting phase and that the Voter's state is participating
+    if (m_phase != Voting) return *this;
+    if (!participate(vote.m_voter.state())) return *this;
 
-    // else, add the points, according to voterType
-    if (vote.m_voter.voterType() == Regular) { // regular voter
-        if (vote.m_voter.timesOfVotes() >= m_max_regular_votes) return *this; // reached voting limit - return
-        addPointsIfLegal(vote.m_voter, vote.m_states[0], 1); // add point to voted state
+    // Add points according to the voter type
+    if (vote.m_voter.voterType() == Regular) {
+        if (vote.m_voter.timesOfVotes() >= m_max_regular_votes) return *this; // reached regular voting limit
+
+        addPointsIfLegal(vote.m_voter, vote.m_states[0], 1); // add 1 point to voted state
     } else if (vote.m_voter.voterType() == Judge) {
-        if (vote.m_voter.timesOfVotes() > 0) return *this; // reached voting limit - return
+        if (vote.m_voter.timesOfVotes() > 0) return *this; // reached judge voting limit
+
         for (int i=0; i < 10; i++) {
             addPointsIfLegal(vote.m_voter, vote.m_states[i], getRanking(i));  // add points according to ranking
         }
@@ -267,7 +270,10 @@ bool MainControl::VoteCompare::operator()(MainControl::Iterator iter1, MainContr
 }
 
 string MainControl::operator()(int place, VoterType type) const {
+    // get the state that finished at n-th place
+    // the comparison is done based on the vote type
     Iterator winner = get<Iterator,VoteCompare>(begin(), end(), place, VoteCompare(type));
+
     if (winner == end()) return ""; // place is smaller than 1 or bigger than num of participants
     return (*winner).state();
 }
@@ -279,11 +285,13 @@ ostream& operator<<(ostream& os, const MainControl& eurovision) {
     os << "{" << endl << MainControl::getPhaseText(eurovision.m_phase) << endl;
 
     if (eurovision.m_phase == Registration) {
+        // Print participants
         while (iterator != end) {
             os << iterator->participant << endl;
             iterator = iterator->next;
         }
     } else if (eurovision.m_phase == Voting) {
+        // Print the amount of votes (of each type) each participating state has
         while (iterator != end) {
             os << iterator->participant.state() << " : ";
             os << "Regular(" << iterator->m_regular_votes << ") ";
