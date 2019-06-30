@@ -20,7 +20,12 @@ const char* NoPrice::what() const noexcept {
 
 // ---------------------------------------------
 Seat::Seat(int line, int chair, int base_price) :
-        m_line(line), m_chair(chair), m_price(base_price) {}
+        m_line(line), m_chair(chair) {
+    // check valid price is given
+    if (base_price < 0)
+        m_price = 0;
+    else m_price = base_price;
+}
 
 int Seat::price() const {
     return m_price;

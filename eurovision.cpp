@@ -234,12 +234,14 @@ MainControl& MainControl::operator+=(const Vote& vote) {
 }
 
 string MainControl::operator()(int place, VoterType type) const {
+    // check place is valid
+    if (place < 1 || m_num_of_participants < place) return "";
+
     // get the state that finished at n-th place
     // the comparison is done based on the vote type
     Iterator winner = get<Iterator,VoteCompare>(begin(), end(), place, VoteCompare(type));
 
-    if (winner == end()) return ""; // place is smaller than 1 or bigger than num of participants
-    return (*winner).state();
+    return (*winner).state(); // if this is the end dummy -> empty string is returned
 }
 
 ostream& operator<<(ostream& os, const MainControl& eurovision) {
